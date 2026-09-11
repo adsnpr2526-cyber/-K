@@ -72,7 +72,7 @@
     </div>
   </div>
 
-  <!-- 2. เงื่อนไข และ ดัชนีฐาน (แก้ไขโดยเอา readonly ออกเพื่อให้แก้ไขดัชนีฐานได้) -->
+  <!-- 2. เงื่อนไข และ ดัชนีฐาน -->
   <div class="section no-print">
     <div class="section-title">⚙️ 2. เงื่อนไขและดัชนีราคาฐาน (Base Indices: Io, Co, Mo, So, ฯลฯ)</div>
     <div class="grid-2" style="margin-bottom: 12px;">
@@ -495,7 +495,11 @@
       });
     }
     closeModal();
-    alert('บันทึกดัชนีประจำงวดสำเร็จ!');
+    
+    // หากมีการเปิดตารางสรุปไว้ ให้คำนวณใหม่โดยอัตโนมัติ
+    if (document.getElementById('reportSection').style.display !== 'none') {
+      calculateAll();
+    }
   }
 
   // คำนวณหลักทั้งหมด
@@ -720,7 +724,6 @@
     let descRowsHtml = '';
 
     c.termResults.forEach(t => {
-      // แถวตารางคำนวณ
       rowsHtml += `
         <tr>
           <td>${t.label}</td>
@@ -732,7 +735,6 @@
         </tr>
       `;
 
-      // แถวตารางคำอธิบาย/ความหมายดัชนี
       const descText = indexDescriptions[t.key] || `ดัชนีราคา${t.label} จัดทำโดยกระทรวงพาณิชย์`;
       descRowsHtml += `
         <tr>
