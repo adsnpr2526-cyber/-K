@@ -39,7 +39,7 @@
     .btn-sm { padding: 4px 8px; font-size: 12px; }
 
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 100; }
-    .modal-content { background: white; padding: 20px; border-radius: 10px; width: 90%; max-width: 700px; max-height: 90vh; overflow-y: auto; }
+    .modal-content { background: white; padding: 20px; border-radius: 10px; width: 90%; max-width: 750px; max-height: 90vh; overflow-y: auto; }
 
     @media print {
       .no-print { display: none !important; }
@@ -53,7 +53,7 @@
 
 <div class="container">
   <h1>📊 ระบบคำนวณค่า K และออกรายงานแนบท้ายสัญญา</h1>
-  <p class="subtitle">รองรับสูตรค่า K มาตรฐาน มติ ครม. ทุกหมวดงาน และพิมพ์รายงานแยกรายงวด</p>
+  <p class="subtitle">รองรับสูตรค่า K มาตรฐาน มติ ครม. ครบทุกประเภท และพิมพ์รายงานแยกรายงวด</p>
 
   <!-- 1. ข้อมูลสัญญา -->
   <div class="section no-print">
@@ -84,18 +84,19 @@
         </select>
       </div>
     </div>
-    <div class="grid-3">
-      <div class="form-group"><label>Io (ทั่วไป)</label><input type="number" step="0.1" id="base_Io" value="212.8"></div>
+    <div class="grid-4">
+      <div class="form-group"><label>Io (ดัชนีผู้บริโภค)</label><input type="number" step="0.1" id="base_Io" value="100.0"></div>
       <div class="form-group"><label>Co (ซีเมนต์)</label><input type="number" step="0.1" id="base_Co" value="100.0"></div>
-      <div class="form-group"><label>Mo (วัสดุ)</label><input type="number" step="0.1" id="base_Mo" value="244.8"></div>
+      <div class="form-group"><label>Mo (วัสดุก่อสร้าง)</label><input type="number" step="0.1" id="base_Mo" value="100.0"></div>
       <div class="form-group"><label>So (เหล็ก)</label><input type="number" step="0.1" id="base_So" value="100.0"></div>
       <div class="form-group"><label>Eo (เครื่องจักร)</label><input type="number" step="0.1" id="base_Eo" value="100.0"></div>
       <div class="form-group"><label>Fo (น้ำมันดีเซล)</label><input type="number" step="0.1" id="base_Fo" value="100.0"></div>
       <div class="form-group"><label>Ao (แอสฟัลต์)</label><input type="number" step="0.1" id="base_Ao" value="100.0"></div>
-      <div class="form-group"><label>Gt (ยางตระกูล G)</label><input type="number" step="0.1" id="base_Go" value="100.0"></div>
-      <div class="form-group"><label>PPo (ท่อ PVC/PE)</label><input type="number" step="0.1" id="base_PPo" value="100.0"></div>
-      <div class="form-group"><label>PCo (ท่อคอนกรีต)</label><input type="number" step="0.1" id="base_PCo" value="100.0"></div>
-      <div class="form-group"><label>PSo (ท่อเหล็ก)</label><input type="number" step="0.1" id="base_PSo" value="100.0"></div>
+      <div class="form-group"><label>Go (ยางตระกูล G)</label><input type="number" step="0.1" id="base_Go" value="100.0"></div>
+      <div class="form-group"><label>ACo (ท่อซีเมนต์ใยหิน)</label><input type="number" step="0.1" id="base_ACo" value="100.0"></div>
+      <div class="form-group"><label>PVCo (ท่อ PVC)</label><input type="number" step="0.1" id="base_PVCo" value="100.0"></div>
+      <div class="form-group"><label>PEo (ท่อ PE)</label><input type="number" step="0.1" id="base_PEo" value="100.0"></div>
+      <div class="form-group"><label>GIPo (ท่อเหล็กอาบสังกะสี)</label><input type="number" step="0.1" id="base_GIPo" value="100.0"></div>
       <div class="form-group"><label>Wo (สายไฟฟ้า)</label><input type="number" step="0.1" id="base_Wo" value="100.0"></div>
     </div>
   </div>
@@ -113,8 +114,8 @@
           <th width="12%">วันที่ส่งมอบ</th>
           <th width="14%" class="text-right">ค่างานทั้งหมด</th>
           <th width="14%" class="text-right">ไม่อยู่ในข่าย</th>
-          <th width="24%">สูตรค่า K ที่ใช้</th>
-          <th width="14%" class="text-center">ดัชนีประจำงวด</th>
+          <th width="26%">สูตรค่า K ที่ใช้</th>
+          <th width="12%" class="text-center">ดัชนีประจำงวด</th>
           <th width="16%" class="text-center">จัดการ</th>
         </tr>
       </thead>
@@ -198,69 +199,198 @@
 </div>
 
 <script>
-  // 1. คลังสูตร K มาตรฐานตามหลักเกณฑ์มติ ครม.
+  // 1. คลังสูตร K มาตรฐานตามหลักเกณฑ์มติ ครม. ครบทุกหมวดงาน (28 สูตร)
   const FORMULAS = {
+    // หมวด 1 งานอาคาร
     "K1_1": {
       name: "1.1 งานอาคาร",
       const: 0.25,
       terms: [ { key: "I", coeff: 0.15, label: "ดัชนีผู้บริโภค (I)" }, { key: "C", coeff: 0.10, label: "ดัชนีซีเมนต์ (C)" }, { key: "M", coeff: 0.40, label: "ดัชนีวัสดุก่อสร้าง (M)" }, { key: "S", coeff: 0.10, label: "ดัชนีเหล็ก (S)" } ]
     },
+
+    // หมวด 2 งานดิน
     "K2_1": {
       name: "2.1 งานดิน",
       const: 0.30,
-      terms: [ { key: "I", coeff: 0.10, label: "ดัชนีผู้บริโภค (I)" }, { key: "E", coeff: 0.20, label: "ดัชนีเครื่องจักร (E)" }, { key: "F", coeff: 0.40, label: "ดัชนีน้ำมันดีเซล (F)" } ]
+      terms: [ { key: "I", coeff: 0.10, label: "ดัชนีผู้บริโภค (I)" }, { key: "E", coeff: 0.40, label: "ดัชนีเครื่องจักร (E)" }, { key: "F", coeff: 0.20, label: "ดัชนีน้ำมันดีเซล (F)" } ]
     },
     "K2_2": {
-      name: "2.2 งานหินรองพื้น/หินพื้นทาง",
-      const: 0.25,
-      terms: [ { key: "I", coeff: 0.15, label: "ดัชนีผู้บริโภค (I)" }, { key: "E", coeff: 0.20, label: "ดัชนีเครื่องจักร (E)" }, { key: "F", coeff: 0.40, label: "ดัชนีน้ำมันดีเซล (F)" } ]
+      name: "2.2 งานหินเรียง",
+      const: 0.40,
+      terms: [ { key: "I", coeff: 0.20, label: "ดัชนีผู้บริโภค (I)" }, { key: "M", coeff: 0.20, label: "ดัชนีวัสดุก่อสร้าง (M)" }, { key: "F", coeff: 0.20, label: "ดัชนีน้ำมันดีเซล (F)" } ]
     },
     "K2_3": {
-      name: "2.3 งานผิวทางแอสฟัลต์คอนกรีต",
-      const: 0.30,
-      terms: [ { key: "I", coeff: 0.10, label: "ดัชนีผู้บริโภค (I)" }, { key: "A", coeff: 0.40, label: "ดัชนีแอสฟัลต์ (A)" }, { key: "E", coeff: 0.10, label: "ดัชนีเครื่องจักร (E)" }, { key: "F", coeff: 0.10, label: "ดัชนีน้ำมันดีเซล (F)" } ]
+      name: "2.3 งานเจาะระเบิดหิน",
+      const: 0.45,
+      terms: [ { key: "I", coeff: 0.15, label: "ดัชนีผู้บริโภค (I)" }, { key: "M", coeff: 0.10, label: "ดัชนีวัสดุก่อสร้าง (M)" }, { key: "E", coeff: 0.20, label: "ดัชนีเครื่องจักร (E)" }, { key: "F", coeff: 0.10, label: "ดัชนีน้ำมันดีเซล (F)" } ]
     },
-    "K2_4": {
-      name: "2.4 งานผิวทางคอนกรีตเสริมเหล็ก",
+
+    // หมวด 3 งานทาง
+    "K3_1": {
+      name: "3.1 งานผิวทาง Prime Coat, Tack Coat, Seal Coat",
+      const: 0.30,
+      terms: [ { key: "A", coeff: 0.40, label: "ดัชนีแอสฟัลต์ (A)" }, { key: "E", coeff: 0.20, label: "ดัชนีเครื่องจักร (E)" }, { key: "F", coeff: 0.10, label: "ดัชนีน้ำมันดีเซล (F)" } ]
+    },
+    "K3_2": {
+      name: "3.2 งานผิวทาง Surface Treatment Slurry Seal",
+      const: 0.30,
+      terms: [ { key: "M", coeff: 0.10, label: "ดัชนีวัสดุก่อสร้าง (M)" }, { key: "A", coeff: 0.30, label: "ดัชนีแอสฟัลต์ (A)" }, { key: "E", coeff: 0.20, label: "ดัชนีเครื่องจักร (E)" }, { key: "F", coeff: 0.10, label: "ดัชนีน้ำมันดีเซล (F)" } ]
+    },
+    "K3_3": {
+      name: "3.3 งานผิวทาง Asphaltic Concrete, Penetration Macadam",
+      const: 0.30,
+      terms: [ { key: "M", coeff: 0.10, label: "ดัชนีวัสดุก่อสร้าง (M)" }, { key: "A", coeff: 0.40, label: "ดัชนีแอสฟัลต์ (A)" }, { key: "E", coeff: 0.10, label: "ดัชนีเครื่องจักร (E)" }, { key: "F", coeff: 0.10, label: "ดัชนีน้ำมันดีเซล (F)" } ]
+    },
+    "K3_4": {
+      name: "3.4 งานผิวถนนคอนกรีตเสริมเหล็ก",
       const: 0.30,
       terms: [ { key: "I", coeff: 0.10, label: "ดัชนีผู้บริโภค (I)" }, { key: "C", coeff: 0.35, label: "ดัชนีซีเมนต์ (C)" }, { key: "M", coeff: 0.10, label: "ดัชนีวัสดุก่อสร้าง (M)" }, { key: "S", coeff: 0.15, label: "ดัชนีเหล็ก (S)" } ]
     },
-    "K2_5": {
-      name: "2.5 งานโครงสร้างสะพาน/ท่อเหลี่ยม",
+    "K3_5": {
+      name: "3.5 งานท่อระบายน้ำคอนกรีตเสริมเหล็กและงานบ่อพัก",
+      const: 0.35,
+      terms: [ { key: "I", coeff: 0.20, label: "ดัชนีผู้บริโภค (I)" }, { key: "C", coeff: 0.15, label: "ดัชนีซีเมนต์ (C)" }, { key: "M", coeff: 0.15, label: "ดัชนีวัสดุก่อสร้าง (M)" }, { key: "S", coeff: 0.15, label: "ดัชนีเหล็ก (S)" } ]
+    },
+    "K3_6": {
+      name: "3.6 งานโครงสร้างคอนกรีตเสริมเหล็กและงานเขื่อนกันตลิ่ง",
       const: 0.30,
       terms: [ { key: "I", coeff: 0.10, label: "ดัชนีผู้บริโภค (I)" }, { key: "C", coeff: 0.15, label: "ดัชนีซีเมนต์ (C)" }, { key: "M", coeff: 0.20, label: "ดัชนีวัสดุก่อสร้าง (M)" }, { key: "S", coeff: 0.25, label: "ดัชนีเหล็ก (S)" } ]
     },
-    "K3_1": {
-      name: "3.1 งานอาคารชลประทาน (ไม่รวมเขื่อน)",
-      const: 0.45,
-      terms: [ { key: "I", coeff: 0.20, label: "ดัชนีผู้บริโภค (I)" }, { key: "C", coeff: 0.10, label: "ดัชนีซีเมนต์ (C)" }, { key: "M", coeff: 0.10, label: "ดัชนีวัสดุก่อสร้าง (M)" }, { key: "S", coeff: 0.15, label: "ดัชนีเหล็ก (S)" } ]
+    "K3_7": {
+      name: "3.7 งานโครงสร้างเหล็ก",
+      const: 0.25,
+      terms: [ { key: "I", coeff: 0.10, label: "ดัชนีผู้บริโภค (I)" }, { key: "C", coeff: 0.05, label: "ดัชนีซีเมนต์ (C)" }, { key: "M", coeff: 0.20, label: "ดัชนีวัสดุก่อสร้าง (M)" }, { key: "S", coeff: 0.40, label: "ดัชนีเหล็ก (S)" } ]
     },
-    "K3_2": {
-      name: "3.2 งานคลองส่งน้ำคอนกรีต/ดายหญ้า",
-      const: 0.35,
-      terms: [ { key: "I", coeff: 0.20, label: "ดัชนีผู้บริโภค (I)" }, { key: "C", coeff: 0.25, label: "ดัชนีซีเมนต์ (C)" }, { key: "M", coeff: 0.10, label: "ดัชนีวัสดุก่อสร้าง (M)" }, { key: "S", coeff: 0.10, label: "ดัชนีเหล็ก (S)" } ]
-    },
+
+    // หมวด 4 งานชลประทาน
     "K4_1": {
-      name: "4.1 งานวางท่อ PVC / PE",
+      name: "4.1 งานอาคารชลประทานไม่รวมบานเหล็ก",
       const: 0.40,
-      terms: [ { key: "I", coeff: 0.10, label: "ดัชนีผู้บริโภค (I)" }, { key: "PP", coeff: 0.50, label: "ดัชนีท่อ PVC/PE (PP)" } ]
+      terms: [ { key: "I", coeff: 0.20, label: "ดัชนีผู้บริโภค (I)" }, { key: "C", coeff: 0.10, label: "ดัชนีซีเมนต์ (C)" }, { key: "M", coeff: 0.10, label: "ดัชนีวัสดุก่อสร้าง (M)" }, { key: "S", coeff: 0.20, label: "ดัชนีเหล็ก (S)" } ]
     },
     "K4_2": {
-      name: "4.2 งานวางท่อเหล็กส่งน้ำ",
+      name: "4.2 งานอาคารชลประทานรวมบานเหล็ก",
       const: 0.35,
-      terms: [ { key: "I", coeff: 0.10, label: "ดัชนีผู้บริโภค (I)" }, { key: "PS", coeff: 0.55, label: "ดัชนีท่อเหล็ก (PS)" } ]
+      terms: [ { key: "I", coeff: 0.20, label: "ดัชนีผู้บริโภค (I)" }, { key: "C", coeff: 0.10, label: "ดัชนีซีเมนต์ (C)" }, { key: "M", coeff: 0.10, label: "ดัชนีวัสดุก่อสร้าง (M)" }, { key: "S", coeff: 0.25, label: "ดัชนีเหล็ก (S)" } ]
     },
-    "K5_1": {
-      name: "5.1 งานระบบสายไฟฟ้า underground/overhead",
+    "K4_3": {
+      name: "4.3 งานบานระบาย Trashrack และ Steel Liner",
+      const: 0.35,
+      terms: [ { key: "I", coeff: 0.20, label: "ดัชนีผู้บริโภค (I)" }, { key: "G", coeff: 0.45, label: "ดัชนียางตระกูล G (G)" } ]
+    },
+    "K4_4": {
+      name: "4.4 งานเหล็กเสริมคอนกรีต และ Anchor Bar",
+      const: 0.25,
+      terms: [ { key: "I", coeff: 0.15, label: "ดัชนีผู้บริโภค (I)" }, { key: "S", coeff: 0.60, label: "ดัชนีเหล็ก (S)" } ]
+    },
+    "K4_5": {
+      name: "4.5 งานคอนกรีตไม่รวมเหล็กและคอนกรีตดาดคลอง",
+      const: 0.45,
+      terms: [ { key: "I", coeff: 0.15, label: "ดัชนีผู้บริโภค (I)" }, { key: "C", coeff: 0.25, label: "ดัชนีซีเมนต์ (C)" }, { key: "M", coeff: 0.15, label: "ดัชนีวัสดุก่อสร้าง (M)" } ]
+    },
+    "K4_6": {
+      name: "4.6 งานเจาะ",
       const: 0.40,
-      terms: [ { key: "I", coeff: 0.10, label: "ดัชนีผู้บริโภค (I)" }, { key: "W", coeff: 0.50, label: "ดัชนีสายไฟฟ้า (W)" } ]
+      terms: [ { key: "I", coeff: 0.20, label: "ดัชนีผู้บริโภค (I)" }, { key: "M", coeff: 0.10, label: "ดัชนีวัสดุก่อสร้าง (M)" }, { key: "E", coeff: 0.20, label: "ดัชนีเครื่องจักร (E)" }, { key: "F", coeff: 0.10, label: "ดัชนีน้ำมันดีเซล (F)" } ]
+    },
+    "K4_7": {
+      name: "4.7 งานอัดฉีดน้ำปูน",
+      const: 0.00,
+      terms: [ { key: "C", coeff: 1.00, label: "ดัชนีซีเมนต์ (C)" } ]
+    },
+
+    // หมวด 5 งานระบบสาธารณูปโภค
+    "K5_1_1": {
+      name: "5.1.1 งานวางท่อ AC, PVC (ผู้ว่าจ้างจัดหาท่อ)",
+      const: 0.50,
+      terms: [ { key: "I", coeff: 0.25, label: "ดัชนีผู้บริโภค (I)" }, { key: "M", coeff: 0.25, label: "ดัชนีวัสดุก่อสร้าง (M)" } ]
+    },
+    "K5_1_2": {
+      name: "5.1.2 งานวางท่อ AC (ผู้รับจ้างจัดหาท่อ)",
+      const: 0.40,
+      terms: [ { key: "I", coeff: 0.10, label: "ดัชนีผู้บริโภค (I)" }, { key: "M", coeff: 0.10, label: "ดัชนีวัสดุก่อสร้าง (M)" }, { key: "AC", coeff: 0.40, label: "ดัชนีท่อ AC (AC)" } ]
+    },
+    "K5_1_3": {
+      name: "5.1.3 งานวางท่อ PVC (ผู้รับจ้างจัดหาท่อ)",
+      const: 0.40,
+      terms: [ { key: "I", coeff: 0.10, label: "ดัชนีผู้บริโภค (I)" }, { key: "M", coeff: 0.10, label: "ดัชนีวัสดุก่อสร้าง (M)" }, { key: "PVC", coeff: 0.40, label: "ดัชนีท่อ PVC (PVC)" } ]
+    },
+    "K5_2_1": {
+      name: "5.2.1 งานวางท่อเหล็กเหนียว/PE (ผู้ว่าจ้างจัดหาท่อ)",
+      const: 0.40,
+      terms: [ { key: "I", coeff: 0.20, label: "ดัชนีผู้บริโภค (I)" }, { key: "M", coeff: 0.15, label: "ดัชนีวัสดุก่อสร้าง (M)" }, { key: "E", coeff: 0.15, label: "ดัชนีเครื่องจักร (E)" }, { key: "F", coeff: 0.10, label: "ดัชนีน้ำมันดีเซล (F)" } ]
+    },
+    "K5_2_2": {
+      name: "5.2.2 งานวางท่อเหล็กเหนียว (ผู้รับจ้างจัดหาท่อ)",
+      const: 0.40,
+      terms: [ { key: "I", coeff: 0.10, label: "ดัชนีผู้บริโภค (I)" }, { key: "M", coeff: 0.10, label: "ดัชนีวัสดุก่อสร้าง (M)" }, { key: "E", coeff: 0.10, label: "ดัชนีเครื่องจักร (E)" }, { key: "S", coeff: 0.30, label: "ดัชนีเหล็ก (S)" } ]
+    },
+    "K5_2_3": {
+      name: "5.2.3 งานวางท่อ PE (ผู้รับจ้างจัดหาท่อ)",
+      const: 0.40,
+      terms: [ { key: "I", coeff: 0.10, label: "ดัชนีผู้บริโภค (I)" }, { key: "M", coeff: 0.10, label: "ดัชนีวัสดุก่อสร้าง (M)" }, { key: "PE", coeff: 0.40, label: "ดัชนีท่อ PE (PE)" } ]
+    },
+    "K5_3": {
+      name: "5.3 งานปรับปรุงอุโมงค์ส่งน้ำ และ Secondary Lining",
+      const: 0.40,
+      terms: [ { key: "I", coeff: 0.10, label: "ดัชนีผู้บริโภค (I)" }, { key: "E", coeff: 0.15, label: "ดัชนีเครื่องจักร (E)" }, { key: "F", coeff: 0.35, label: "ดัชนีน้ำมันดีเซล (F)" } ]
+    },
+    "K5_4": {
+      name: "5.4 งานวางท่อ PVC หุ้มด้วยคอนกรีต",
+      const: 0.30,
+      terms: [ { key: "I", coeff: 0.10, label: "ดัชนีผู้บริโภค (I)" }, { key: "C", coeff: 0.20, label: "ดัชนีซีเมนต์ (C)" }, { key: "M", coeff: 0.05, label: "ดัชนีวัสดุก่อสร้าง (M)" }, { key: "S", coeff: 0.05, label: "ดัชนีเหล็ก (S)" }, { key: "PVC", coeff: 0.30, label: "ดัชนีท่อ PVC (PVC)" } ]
+    },
+    "K5_5": {
+      name: "5.5 งานวางท่อ PVC กลบทราย",
+      const: 0.25,
+      terms: [ { key: "I", coeff: 0.05, label: "ดัชนีผู้บริโภค (I)" }, { key: "M", coeff: 0.05, label: "ดัชนีวัสดุก่อสร้าง (M)" }, { key: "PVC", coeff: 0.65, label: "ดัชนีท่อ PVC (PVC)" } ]
+    },
+    "K5_6": {
+      name: "5.6 งานวางท่อเหล็กอาบสังกะสี",
+      const: 0.50,
+      terms: [ { key: "I", coeff: 0.10, label: "ดัชนีผู้บริโภค (I)" }, { key: "GIP", coeff: 0.40, label: "ดัชนีท่อเหล็กอาบสังกะสี (GIP)" } ]
+    },
+    "K5_7_1": {
+      name: "5.7.1 งานติดตั้งเสา โครงเหล็กสายส่ง และอุปกรณ์ (กฟผ.)",
+      const: 0.60,
+      terms: [ { key: "I", coeff: 0.25, label: "ดัชนีผู้บริโภค (I)" }, { key: "F", coeff: 0.15, label: "ดัชนีน้ำมันดีเซล (F)" } ]
+    },
+    "K5_7_2": {
+      name: "5.7.2 งานก่อสร้างฐานรากเสาไฟฟ้า Tower Foundation (กฟผ.)",
+      const: 0.35,
+      terms: [ { key: "I", coeff: 0.15, label: "ดัชนีผู้บริโภค (I)" }, { key: "C", coeff: 0.20, label: "ดัชนีซีเมนต์ (C)" }, { key: "S", coeff: 0.20, label: "ดัชนีเหล็ก (S)" }, { key: "F", coeff: 0.10, label: "ดัชนีน้ำมันดีเซล (F)" } ]
+    },
+    "K5_7_3": {
+      name: "5.7.3 งานก่อสร้างฐานรากอุปกรณ์ไฟฟ้าสถานีไฟฟ้าย่อย (กฟผ.)",
+      const: 0.50,
+      terms: [ { key: "I", coeff: 0.15, label: "ดัชนีผู้บริโภค (I)" }, { key: "C", coeff: 0.15, label: "ดัชนีซีเมนต์ (C)" }, { key: "S", coeff: 0.20, label: "ดัชนีเหล็ก (S)" } ]
+    },
+    "K5_8_1": {
+      name: "5.8.1 งานเสาเข็มคอนกรีตอัดแรง (กฟผ.)",
+      const: 0.35,
+      terms: [ { key: "I", coeff: 0.15, label: "ดัชนีผู้บริโภค (I)" }, { key: "C", coeff: 0.20, label: "ดัชนีซีเมนต์ (C)" }, { key: "S", coeff: 0.30, label: "ดัชนีเหล็ก (S)" } ]
+    },
+    "K5_8_2": {
+      name: "5.8.2 งานเสาเข็มแบบ Cast in Place (กฟผ.)",
+      const: 0.30,
+      terms: [ { key: "I", coeff: 0.10, label: "ดัชนีผู้บริโภค (I)" }, { key: "C", coeff: 0.25, label: "ดัชนีซีเมนต์ (C)" }, { key: "S", coeff: 0.35, label: "ดัชนีเหล็ก (S)" } ]
+    },
+    "K5_9_1": {
+      name: "5.9.1 งานสายส่งแรงสูง 69 - 115 KV (ผู้ว่าจ้างจัดหาวัสดุ) (กภภ.)",
+      const: 0.80,
+      terms: [ { key: "I", coeff: 0.05, label: "ดัชนีผู้บริโภค (I)" }, { key: "M", coeff: 0.10, label: "ดัชนีวัสดุก่อสร้าง (M)" }, { key: "F", coeff: 0.05, label: "ดัชนีน้ำมันดีเซล (F)" } ]
+    },
+    "K5_9_2": {
+      name: "5.9.2 งานสายส่งแรงสูง 69 - 115 KV (ผู้รับจ้างจัดหาวัสดุ) (กภภ.)",
+      const: 0.45,
+      terms: [ { key: "I", coeff: 0.05, label: "ดัชนีผู้บริโภค (I)" }, { key: "M", coeff: 0.20, label: "ดัชนีวัสดุก่อสร้าง (M)" }, { key: "F", coeff: 0.05, label: "ดัชนีน้ำมันดีเซล (F)" }, { key: "W", coeff: 0.25, label: "ดัชนีสายไฟฟ้า (W)" } ]
     }
   };
 
   // 2. ข้อมูลรายการงวดงานเริ่มต้น
   let periods = [
-    { id: 1, date: "30 มิ.ย. 2559", po: 1400000, nonEligiblePo: 250000, formulaKey: "K1_1", indices: { I: 221.0, C: 105.0, M: 260.3, S: 105.0 } },
-    { id: 2, date: "29 ก.ค. 2559", po: 5000000, nonEligiblePo: 20000, formulaKey: "K2_1", indices: { I: 221.0, E: 108.0, F: 112.5 } }
+    { id: 1, date: "30 มิ.ย. 2559", po: 1400000, nonEligiblePo: 250000, formulaKey: "K2_1", indices: { I: 105.0, E: 108.0, F: 112.5 } },
+    { id: 2, date: "29 ก.ค. 2559", po: 5000000, nonEligiblePo: 20000, formulaKey: "K2_1", indices: { I: 106.0, E: 108.0, F: 112.5 } }
   ];
 
   let currentEditingPeriodId = null;
@@ -313,7 +443,7 @@
       po: 0,
       nonEligiblePo: 0,
       formulaKey: "K1_1",
-      indices: { I: 212.8, C: 100.0, M: 244.8, S: 100.0 }
+      indices: { I: 100.0, C: 100.0, M: 100.0, S: 100.0 }
     });
     renderPeriodTable();
   }
@@ -383,12 +513,62 @@
       const eligiblePo = p.po - p.nonEligiblePo;
       const formula = FORMULAS[p.formulaKey];
 
-      // คำนวณแต่ละพจน์
+      // คำนวณกรณีพิเศษ: 4.7 งานอัดฉีดน้ำปูน (ปรับตามดัชนีซีเมนต์โดยตรง)
+      if (p.formulaKey === 'K4_7') {
+        const baseVal = parseFloat(document.getElementById('base_Co')?.value) || 100.0;
+        const periodVal = p.indices['C'] !== undefined ? p.indices['C'] : baseVal;
+        const ratio = Number((periodVal / baseVal).toFixed(3));
+        const kValue = ratio;
+        
+        let kDiff = 0;
+        if (kValue > upperLimit) kDiff = Number((kValue - upperLimit).toFixed(3));
+        else if (kValue < lowerLimit) kDiff = Number((lowerLimit - kValue).toFixed(3));
+        
+        const compensation = eligiblePo * kDiff;
+
+        sumPo += p.po;
+        sumNonEligible += p.nonEligiblePo;
+        sumEligible += eligiblePo;
+        sumComp += compensation;
+
+        p.calcData = {
+          eligiblePo,
+          kValue,
+          kDiff,
+          compensation,
+          termResults: [{ key: 'C', label: 'ดัชนีซีเมนต์ (C)', coeff: 1.0, baseVal, periodVal, ratio, product: ratio }],
+          criteriaPercent,
+          formulaName: formula.name,
+          formulaConst: 0
+        };
+
+        summaryTbody.innerHTML += `
+          <tr>
+            <td class="text-center">${p.id}</td>
+            <td class="text-center">${p.date}</td>
+            <td class="text-right">${p.po.toLocaleString()}</td>
+            <td class="text-right">${p.nonEligiblePo.toLocaleString()}</td>
+            <td class="text-right">${eligiblePo.toLocaleString()}</td>
+            <td class="text-center">${p.formulaKey}</td>
+            <td class="text-center"><b>${kValue.toFixed(3)}</b></td>
+            <td class="text-center">${kDiff.toFixed(3)}</td>
+            <td class="text-right"><b>${compensation.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</b></td>
+            <td class="text-center no-print">
+              <button class="btn btn-primary btn-sm" onclick="printSinglePeriod(${p.id})">🖨️ รายงานงวดนี้</button>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      // คำนวณแต่ละพจน์สำหรับสูตรปกติ
       let termResults = [];
       let calculatedK = formula.const;
 
       formula.terms.forEach(term => {
-        const baseVal = parseFloat(document.getElementById(`base_${term.key}o`)?.value) || 100.0;
+        let baseInputKey = `base_${term.key}o`;
+
+        const baseVal = parseFloat(document.getElementById(baseInputKey)?.value) || 100.0;
         const periodVal = p.indices[term.key] !== undefined ? p.indices[term.key] : baseVal;
         
         const ratio = Number((periodVal / baseVal).toFixed(3)); // ปัดเศษ 3 ตำแหน่ง
@@ -557,8 +737,8 @@
         <ul>
           <li>ค่างานตามงวดนี้ทั้งหมด = <b>${p.po.toLocaleString()}</b> บาท</li>
           <li>หัก ค่างานส่วนที่ไม่นำมาคิดปรับราคา = <b>${p.nonEligiblePo.toLocaleString()}</b> บาท</li>
-          <li><b>เหลือค่างานที่ได้รับพิจารณา ($P_o$) = ${c.eligiblePo.toLocaleString()}</b> บาท</li>
-          <li>ส่วนต่างค่า K หลังหักเกณฑ์ $\pm${c.criteriaPercent}% = <b>${c.kDiff.toFixed(3)}</b></li>
+          <li><b>เหลือค่างานที่ได้รับพิจารณา (P_o) = ${c.eligiblePo.toLocaleString()}</b> บาท</li>
+          <li>ส่วนต่างค่า K หลังหักเกณฑ์ ±${c.criteriaPercent}% = <b>${c.kDiff.toFixed(3)}</b></li>
           <li><b>เงินชดเชยค่างานที่คำนวณได้ = <u style="font-size: 16px;">${c.compensation.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</u> บาท</b></li>
         </ul>
       </body>
