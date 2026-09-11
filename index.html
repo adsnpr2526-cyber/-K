@@ -878,12 +878,17 @@
         </tr>
       `;
 
-      const descText = indexDescriptions[t.key] || `ดัชนีราคา${t.label} จัดทำโดยกระทรวงพาณิชย์`;
+      const baseDescText = indexDescriptions[t.key] || `ดัชนีราคา${t.label} จัดทำโดยกระทรวงพาณิชย์`;
       descRowsHtml += `
         <tr>
-          <td class="text-center"><b>${t.key}o / ${t.key}t</b></td>
+          <td class="text-center"><b>${t.key}o</b></td>
           <td><b>${t.label}</b></td>
-          <td>${descText}</td>
+          <td>${baseDescText} (ในเดือนที่เปิดซองประกวดราคา: ${bidDateFormatted})</td>
+        </tr>
+        <tr>
+          <td class="text-center"><b>${t.key}t</b></td>
+          <td><b>${t.label}</b></td>
+          <td>${baseDescText} (ในเดือนที่ส่งมอบงาน: ${periodDateFormatted})</td>
         </tr>
       `;
     });
