@@ -36,6 +36,8 @@
     .btn-success:hover { background: #2f855a; }
     .btn-danger { background: #e53e3e; color: white; }
     .btn-danger:hover { background: #c53030; }
+    .btn-secondary { background: #718096; color: white; }
+    .btn-secondary:hover { background: #4a5568; }
     .btn-sm { padding: 4px 8px; font-size: 12px; }
 
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 100; }
@@ -53,22 +55,24 @@
 
 <div class="container">
   <h1>📊 ระบบคำนวณค่า K และออกรายงานแนบท้ายสัญญา</h1>
-  <p class="subtitle">รองรับสูตรค่า K มาตรฐาน มติ ครม. ครบทุกประเภท และพิมพ์รายงานแยกรายงวด</p>
+  <p class="subtitle">รองรับสูตรค่า K มาตรฐาน มติ ครม. ครบทุกประเภท และบันทึกข้อมูลอัตโนมัติ</p>
 
   <!-- 1. ข้อมูลสัญญา -->
   <div class="section no-print">
     <div class="section-title">🏛️ 1. ข้อมูลสัญญาและหน่วยงาน</div>
     <div class="grid-2">
-      <div class="form-group"><label>กระทรวง</label><input type="text" id="ministry" value="กระทรวงเกษตรและสหกรณ์"></div>
-      <div class="form-group"><label>กรม / หน่วยงาน</label><input type="text" id="department" value="กรมชลประทาน"></div>
-      <div class="form-group"><label>ชื่อโครงการ</label><input type="text" id="projectName" value="โครงการแก้ไขปัญหาการขาดแคลนน้ำอุปโภคบริโภค"></div>
-      <div class="form-group"><label>สัญญาเลขที่</label><input type="text" id="contractNo" value="3/2550"></div>
-      <div class="form-group"><label>ผู้รับจ้าง</label><input type="text" id="contractor" value="กิจการร่วมค้า AAAAAA"></div>
-      <div class="form-group"><label>ค่างานตามสัญญา (บาท)</label><input type="number" id="contractValue" value="100000000"></div>
-      <div class="form-group"><label>วันที่เปิดซองประกวดราคา</label><input type="text" id="bidDate" value="10 ต.ค. พ.ศ.2549"></div>
-      <div class="form-group"><label>วันเริ่มสัญญา</label><input type="text" id="startDate" value="25 พ.ค. 2559"></div>
-      <div class="form-group"><label>วันสิ้นสุดสัญญา (เดิม)</label><input type="text" id="endDate" value="25 มิ.ย. 2561"></div>
-      <div class="form-group"><label>วันที่ส่งงานงวดสุดท้าย</label><input type="text" id="finalDeliveryDate" value="7 ก.ค. 2561"></div>
+      <div class="form-group"><label>กระทรวง</label><input type="text" id="ministry" value="กระทรวงเกษตรและสหกรณ์" oninput="saveData()"></div>
+      <div class="form-group"><label>กรม / หน่วยงาน</label><input type="text" id="department" value="กรมชลประทาน" oninput="saveData()"></div>
+      <div class="form-group"><label>ชื่อโครงการ</label><input type="text" id="projectName" value="โครงการแก้ไขปัญหาการขาดแคลนน้ำอุปโภคบริโภค" oninput="saveData()"></div>
+      <div class="form-group"><label>สัญญาเลขที่</label><input type="text" id="contractNo" value="3/2550" oninput="saveData()"></div>
+      <div class="form-group"><label>ผู้รับจ้าง</label><input type="text" id="contractor" value="กิจการร่วมค้า AAAAAA" oninput="saveData()"></div>
+      <div class="form-group"><label>ค่างานทั้งสัญญา (บาท)</label><input type="number" id="contractValue" value="100000000" oninput="saveData()"></div>
+      <div class="form-group"><label>วันที่เปิดซองประกวดราคา</label><input type="text" id="bidDate" value="10 ต.ค. พ.ศ.2549" oninput="saveData()"></div>
+      <div class="form-group"><label>วันเริ่มสัญญา</label><input type="text" id="startDate" value="25 พ.ค. 2559" oninput="saveData()"></div>
+      <div class="form-group"><label>วันสิ้นสุดสัญญา</label><input type="text" id="endDate" value="25 มิ.ย. 2561" oninput="saveData()"></div>
+      <div class="form-group"><label>วันที่ส่งงานงวดสุดท้าย</label><input type="text" id="finalDeliveryDate" value="7 ก.ค. 2561" oninput="saveData()"></div>
+      <div class="form-group"><label>วันที่ครบ 90 วันหลังส่งมอบงาน</label><input type="text" id="date90Days" value="5 ต.ค. 2561" oninput="saveData()"></div>
+      <div class="form-group"><label>วันที่ผู้รับจ้างขอเงินชดเชย</label><input type="text" id="claimDate" value="15 ก.ย. 2561" oninput="saveData()"></div>
     </div>
   </div>
 
@@ -78,26 +82,26 @@
     <div class="grid-2" style="margin-bottom: 12px;">
       <div class="form-group">
         <label>เงื่อนไขการปรับราคา</label>
-        <select id="criteriaPercent">
+        <select id="criteriaPercent" onchange="saveData()">
           <option value="4">เกณฑ์ทั่วไป ±4% (ปรับราคาเมื่อ K เปลี่ยนแปลงเกิน 4%)</option>
           <option value="2">เกณฑ์พิเศษ ±2% (ปรับราคาเมื่อ K เปลี่ยนแปลงเกิน 2%)</option>
         </select>
       </div>
     </div>
     <div class="grid-4">
-      <div class="form-group"><label>Io (ดัชนีผู้บริโภค)</label><input type="number" step="0.1" id="base_Io" value="100.0"></div>
-      <div class="form-group"><label>Co (ซีเมนต์)</label><input type="number" step="0.1" id="base_Co" value="100.0"></div>
-      <div class="form-group"><label>Mo (วัสดุก่อสร้าง)</label><input type="number" step="0.1" id="base_Mo" value="100.0"></div>
-      <div class="form-group"><label>So (เหล็ก)</label><input type="number" step="0.1" id="base_So" value="100.0"></div>
-      <div class="form-group"><label>Eo (เครื่องจักร)</label><input type="number" step="0.1" id="base_Eo" value="100.0"></div>
-      <div class="form-group"><label>Fo (น้ำมันดีเซล)</label><input type="number" step="0.1" id="base_Fo" value="100.0"></div>
-      <div class="form-group"><label>Ao (แอสฟัลต์)</label><input type="number" step="0.1" id="base_Ao" value="100.0"></div>
-      <div class="form-group"><label>Go (ยางตระกูล G)</label><input type="number" step="0.1" id="base_Go" value="100.0"></div>
-      <div class="form-group"><label>ACo (ท่อซีเมนต์ใยหิน)</label><input type="number" step="0.1" id="base_ACo" value="100.0"></div>
-      <div class="form-group"><label>PVCo (ท่อ PVC)</label><input type="number" step="0.1" id="base_PVCo" value="100.0"></div>
-      <div class="form-group"><label>PEo (ท่อ PE)</label><input type="number" step="0.1" id="base_PEo" value="100.0"></div>
-      <div class="form-group"><label>GIPo (ท่อเหล็กอาบสังกะสี)</label><input type="number" step="0.1" id="base_GIPo" value="100.0"></div>
-      <div class="form-group"><label>Wo (สายไฟฟ้า)</label><input type="number" step="0.1" id="base_Wo" value="100.0"></div>
+      <div class="form-group"><label>Io (ดัชนีผู้บริโภค)</label><input type="number" step="0.1" id="base_Io" value="100.0" oninput="saveData()"></div>
+      <div class="form-group"><label>Co (ซีเมนต์)</label><input type="number" step="0.1" id="base_Co" value="100.0" oninput="saveData()"></div>
+      <div class="form-group"><label>Mo (วัสดุก่อสร้าง)</label><input type="number" step="0.1" id="base_Mo" value="100.0" oninput="saveData()"></div>
+      <div class="form-group"><label>So (เหล็ก)</label><input type="number" step="0.1" id="base_So" value="100.0" oninput="saveData()"></div>
+      <div class="form-group"><label>Eo (เครื่องจักร)</label><input type="number" step="0.1" id="base_Eo" value="100.0" oninput="saveData()"></div>
+      <div class="form-group"><label>Fo (น้ำมันดีเซล)</label><input type="number" step="0.1" id="base_Fo" value="100.0" oninput="saveData()"></div>
+      <div class="form-group"><label>Ao (แอสฟัลต์)</label><input type="number" step="0.1" id="base_Ao" value="100.0" oninput="saveData()"></div>
+      <div class="form-group"><label>Go (ยางตระกูล G)</label><input type="number" step="0.1" id="base_Go" value="100.0" oninput="saveData()"></div>
+      <div class="form-group"><label>ACo (ท่อซีเมนต์ใยหิน)</label><input type="number" step="0.1" id="base_ACo" value="100.0" oninput="saveData()"></div>
+      <div class="form-group"><label>PVCo (ท่อ PVC)</label><input type="number" step="0.1" id="base_PVCo" value="100.0" oninput="saveData()"></div>
+      <div class="form-group"><label>PEo (ท่อ PE)</label><input type="number" step="0.1" id="base_PEo" value="100.0" oninput="saveData()"></div>
+      <div class="form-group"><label>GIPo (ท่อเหล็กอาบสังกะสี)</label><input type="number" step="0.1" id="base_GIPo" value="100.0" oninput="saveData()"></div>
+      <div class="form-group"><label>Wo (สายไฟฟ้า)</label><input type="number" step="0.1" id="base_Wo" value="100.0" oninput="saveData()"></div>
     </div>
   </div>
 
@@ -105,7 +109,10 @@
   <div class="section no-print">
     <div class="section-title" style="justify-content: space-between;">
       <span>📝 3. รายการงวดงานก่อสร้าง</span>
-      <button class="btn btn-primary btn-sm" onclick="addPeriod()">➕ เพิ่มรายการงวดงาน</button>
+      <div>
+        <button class="btn btn-secondary btn-sm" onclick="resetDefaultData()">🔄 ล้างข้อมูล/เริ่มใหม่</button>
+        <button class="btn btn-primary btn-sm" onclick="addPeriod()">➕ เพิ่มรายการงวดงาน</button>
+      </div>
     </div>
     <table>
       <thead>
@@ -129,26 +136,30 @@
   <!-- 4. แสดงผลลัพธ์ ตารางสรุปแบบฟอร์มที่ 2 -->
   <div class="section" id="reportSection" style="display:none;">
     <div class="section-title" style="justify-content: space-between;">
-      <span>📄 แบบฟอร์มที่ 2 การคำนวณเงินชดเชยเพิ่มเติมค่างานก่อสร้าง (ภาพรวม)</span>
+      <span>📄 แบบฟอร์มที่ 2 การคำนวนเงินชดเชยเพิ่มเติมค่างานก่อสร้างตามสัญญาแบบปรับราคาได้ (ค่า K)</span>
       <button class="btn btn-primary btn-sm no-print" onclick="window.print()">🖨️ พิมพ์รายงานสรุป</button>
     </div>
     
     <table style="margin-bottom: 15px;">
       <tr>
-        <td width="15%"><b>กระทรวง:</b></td><td width="35%" id="rMinistry"></td>
-        <td width="15%"><b>ชื่อโครงการ:</b></td><td width="35%" id="rProjectName"></td>
+        <td width="15%"><b>กระทรวง:</b></td><td width="18%" id="rMinistry"></td>
+        <td width="15%"><b>ชื่อโครงการ:</b></td><td width="18%" id="rProjectName"></td>
+        <td width="16%"><b>วันที่ส่งงานงวดสุดท้าย:</b></td><td width="18%" id="rFinalDeliveryDate"></td>
       </tr>
       <tr>
         <td><b>กรม:</b></td><td id="rDepartment"></td>
-        <td><b>วันที่เปิดซอง:</b></td><td id="rBidDate"></td>
+        <td><b>วันที่เปิดซองประกวดราคา:</b></td><td id="rBidDate"></td>
+        <td><b>วันที่ครบ 90 วันหลังส่งมอบงาน:</b></td><td id="rDate90Days"></td>
       </tr>
       <tr>
         <td><b>สัญญาเลขที่:</b></td><td id="rContractNo"></td>
-        <td><b>ค่างานตามสัญญา:</b></td><td id="rContractValue"></td>
+        <td><b>ค่างานทั้งสัญญา:</b></td><td id="rContractValue"></td>
+        <td><b>วันที่ผู้รับจ้างขอเงินชดเชย:</b></td><td id="rClaimDate"></td>
       </tr>
       <tr>
         <td><b>ผู้รับจ้าง:</b></td><td id="rContractor"></td>
-        <td><b>ระยะเวลาสัญญา:</b></td><td id="rPeriod"></td>
+        <td><b>สัญญาเริ่ม:</b></td><td id="rStartDate"></td>
+        <td><b>สัญญาสิ้นสุด:</b></td><td id="rEndDate"></td>
       </tr>
     </table>
 
@@ -199,7 +210,6 @@
 </div>
 
 <script>
-  // 1. คลังสูตร K มาตรฐานตามหลักเกณฑ์มติ ครม. ครบทุกหมวดงาน (28 สูตร)
   const FORMULAS = {
     "K1_1": { name: "1.1 งานอาคาร", const: 0.25, terms: [ { key: "I", coeff: 0.15, label: "ดัชนีผู้บริโภค (I)" }, { key: "C", coeff: 0.10, label: "ดัชนีซีเมนต์ (C)" }, { key: "M", coeff: 0.40, label: "ดัชนีวัสดุก่อสร้าง (M)" }, { key: "S", coeff: 0.10, label: "ดัชนีเหล็ก (S)" } ] },
     "K2_1": { name: "2.1 งานดิน", const: 0.30, terms: [ { key: "I", coeff: 0.10, label: "ดัชนีผู้บริโภค (I)" }, { key: "E", coeff: 0.40, label: "ดัชนีเครื่องจักร (E)" }, { key: "F", coeff: 0.20, label: "ดัชนีน้ำมันดีเซล (F)" } ] },
@@ -238,12 +248,61 @@
     "K5_9_2": { name: "5.9.2 งานสายส่งแรงสูง 69 - 115 KV (ผู้รับจ้างจัดหาวัสดุ) (กภภ.)", const: 0.45, terms: [ { key: "I", coeff: 0.05, label: "ดัชนีผู้บริโภค (I)" }, { key: "M", coeff: 0.20, label: "ดัชนีวัสดุก่อสร้าง (M)" }, { key: "F", coeff: 0.05, label: "ดัชนีน้ำมันดีเซล (F)" }, { key: "W", coeff: 0.25, label: "ดัชนีสายไฟฟ้า (W)" } ] }
   };
 
-  let periods = [
+  const defaultPeriods = [
     { id: 1, date: "30 มิ.ย. 2559", po: 1400000, nonEligiblePo: 250000, formulaKey: "K2_1", indices: { I: 105.0, E: 108.0, F: 112.5 } },
     { id: 2, date: "29 ก.ค. 2559", po: 5000000, nonEligiblePo: 20000, formulaKey: "K2_1", indices: { I: 106.0, E: 108.0, F: 112.5 } }
   ];
 
+  let periods = [];
   let currentEditingPeriodId = null;
+
+  const baseInputIds = ['base_Io','base_Co','base_Mo','base_So','base_Eo','base_Fo','base_Ao','base_Go','base_ACo','base_PVCo','base_PEo','base_GIPo','base_Wo'];
+  const textInputIds = ['ministry','department','projectName','contractNo','contractor','contractValue','bidDate','startDate','endDate','finalDeliveryDate','date90Days','claimDate','criteriaPercent'];
+
+  function saveData() {
+    const dataToSave = {
+      inputs: {},
+      periods: periods
+    };
+
+    textInputIds.concat(baseInputIds).forEach(id => {
+      const el = document.getElementById(id);
+      if (el) dataToSave.inputs[id] = el.value;
+    });
+
+    localStorage.setItem('kCalcSystemData', JSON.stringify(dataToSave));
+  }
+
+  function loadSavedData() {
+    const saved = localStorage.getItem('kCalcSystemData');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.inputs) {
+          Object.keys(parsed.inputs).forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = parsed.inputs[id];
+          });
+        }
+        if (parsed.periods && Array.isArray(parsed.periods)) {
+          periods = parsed.periods;
+        } else {
+          periods = JSON.parse(JSON.stringify(defaultPeriods));
+        }
+      } catch (e) {
+        periods = JSON.parse(JSON.stringify(defaultPeriods));
+      }
+    } else {
+      periods = JSON.parse(JSON.stringify(defaultPeriods));
+    }
+  }
+
+  function resetDefaultData() {
+    if (confirm("คุณต้องการล้างข้อมูลทั้งหมด และรีเซ็ตกลับเป็นค่าเริ่มต้นหรือไม่?")) {
+      localStorage.removeItem('kCalcSystemData');
+      location.reload();
+    }
+  }
 
   function renderPeriodTable() {
     const tbody = document.getElementById('periodTableBody');
@@ -257,10 +316,10 @@
 
       tbody.innerHTML += `
         <tr>
-          <td><input type="number" class="text-center" value="${p.id}" onchange="periods[${index}].id = parseInt(this.value)||0"></td>
-          <td><input type="text" value="${p.date}" onchange="periods[${index}].date = this.value"></td>
-          <td><input type="number" class="text-right" value="${p.po}" onchange="periods[${index}].po = parseFloat(this.value)||0"></td>
-          <td><input type="number" class="text-right" value="${p.nonEligiblePo}" onchange="periods[${index}].nonEligiblePo = parseFloat(this.value)||0"></td>
+          <td><input type="number" class="text-center" value="${p.id}" onchange="periods[${index}].id = parseInt(this.value)||0; saveData();"></td>
+          <td><input type="text" value="${p.date}" onchange="periods[${index}].date = this.value; saveData();"></td>
+          <td><input type="number" class="text-right" value="${p.po}" onchange="periods[${index}].po = parseFloat(this.value)||0; saveData();"></td>
+          <td><input type="number" class="text-right" value="${p.nonEligiblePo}" onchange="periods[${index}].nonEligiblePo = parseFloat(this.value)||0; saveData();"></td>
           <td>
             <select style="width: 100%;" onchange="changePeriodFormula(${p.id}, this.value)">
               ${formulaOptions}
@@ -281,6 +340,7 @@
     const p = periods.find(item => item.id === id);
     if (p) {
       p.formulaKey = newFormulaKey;
+      saveData();
     }
   }
 
@@ -295,11 +355,13 @@
       indices: { I: 100.0, C: 100.0, M: 100.0, S: 100.0 }
     });
     renderPeriodTable();
+    saveData();
   }
 
   function deletePeriod(id) {
     periods = periods.filter(p => p.id !== id);
     renderPeriodTable();
+    saveData();
   }
 
   function openIndexModal(id) {
@@ -341,6 +403,7 @@
           p.indices[term.key] = parseFloat(inputElem.value) || 0;
         }
       });
+      saveData();
     }
     closeModal();
     
@@ -350,6 +413,8 @@
   }
 
   function calculateAll() {
+    saveData();
+
     const criteriaPercent = parseFloat(document.getElementById('criteriaPercent').value);
     const upperLimit = 1 + (criteriaPercent / 100);
     const lowerLimit = 1 - (criteriaPercent / 100);
@@ -489,7 +554,11 @@
     document.getElementById('rContractor').innerText = document.getElementById('contractor').value;
     document.getElementById('rContractValue').innerText = Number(document.getElementById('contractValue').value).toLocaleString() + ' บาท';
     document.getElementById('rBidDate').innerText = document.getElementById('bidDate').value;
-    document.getElementById('rPeriod').innerText = `${document.getElementById('startDate').value} ถึง ${document.getElementById('endDate').value}`;
+    document.getElementById('rStartDate').innerText = document.getElementById('startDate').value;
+    document.getElementById('rEndDate').innerText = document.getElementById('endDate').value;
+    document.getElementById('rFinalDeliveryDate').innerText = document.getElementById('finalDeliveryDate').value;
+    document.getElementById('rDate90Days').innerText = document.getElementById('date90Days').value;
+    document.getElementById('rClaimDate').innerText = document.getElementById('claimDate').value;
 
     document.getElementById('totalPo').innerText = sumPo.toLocaleString();
     document.getElementById('totalNonEligible').innerText = sumNonEligible.toLocaleString();
@@ -613,7 +682,6 @@
           <tr style="border:none;"><td style="border:none;" colspan="2"><b>ประเภทงาน/สูตรที่ใช้:</b> ${c.formulaName}</td></tr>
         </table>
 
-        <!-- แสดงสูตรและการแทนค่าอย่างละเอียด -->
         <div class="calc-box">
           <div style="font-weight: bold; text-decoration: underline; margin-bottom: 6px;">📐 สูตรและการแทนค่าคำนวณค่า K:</div>
           <div class="calc-step"><b>1. สูตรคำนวณมาตรฐาน:</b> ${formulaSymbolic}</div>
@@ -647,7 +715,6 @@
           </tbody>
         </table>
 
-        <!-- ตารางคำอธิบาย/ความหมายของตัวดัชนีราคาที่ใช้ในงวดนี้ -->
         <div class="section-heading">📌 รายละเอียดและคำอธิบายดัชนีราคาที่ใช้คำนวณ</div>
         <table>
           <thead>
@@ -662,7 +729,6 @@
           </tbody>
         </table>
 
-        <!-- วิธีการคำนวณส่วนต่างและเงินชดเชย -->
         <div class="calc-box">
           <div style="font-weight: bold; text-decoration: underline; margin-bottom: 6px;">💡 วิธีคำนวณเงินชดเชยค่างาน:</div>
           <div class="calc-step"><b>1. พิจารณาเกณฑ์การปรับราคา (±${c.criteriaPercent}%):</b> ${kDiffCalcText}</div>
@@ -680,6 +746,7 @@
     printWin.document.close();
   }
 
+  loadSavedData();
   renderPeriodTable();
 </script>
 </body>
