@@ -277,12 +277,14 @@
       <div class="form-group"><label>สัญญาเลขที่</label><input type="text" id="contractNo" value="3/2550" oninput="saveData()"></div>
       <div class="form-group"><label>ผู้รับจ้าง</label><input type="text" id="contractor" value="กิจการร่วมค้า AAAAAA" oninput="saveData()"></div>
       <div class="form-group"><label>ค่างานทั้งสัญญา (บาท)</label><input type="number" id="contractValue" value="100000000" oninput="saveData()"></div>
-      <div class="form-group"><label>วันที่เปิดซองประกวดราคา</label><input type="text" id="bidDate" value="10 ต.ค. พ.ศ.2549" oninput="saveData()"></div>
-      <div class="form-group"><label>วันเริ่มสัญญา</label><input type="text" id="startDate" value="25 พ.ค. 2559" oninput="saveData()"></div>
-      <div class="form-group"><label>วันสิ้นสุดสัญญา</label><input type="text" id="endDate" value="25 มิ.ย. 2561" oninput="saveData()"></div>
-      <div class="form-group"><label>วันที่ส่งงานงวดสุดท้าย</label><input type="text" id="finalDeliveryDate" value="7 ก.ค. 2561" oninput="saveData()"></div>
-      <div class="form-group"><label>วันที่ครบ 90 วันหลังส่งมอบงาน</label><input type="text" id="date90Days" value="5 ต.ค. 2561" oninput="saveData()"></div>
-      <div class="form-group"><label>วันที่ผู้รับจ้างขอเงินชดเชย</label><input type="text" id="claimDate" value="15 ก.ย. 2561" oninput="saveData()"></div>
+      
+      <!-- เปลี่ยนค่าเริ่มต้นวันที่เป็น พ.ศ. (ค.ศ. + 543) -->
+      <div class="form-group"><label>วันที่เปิดซองประกวดราคา</label><input type="date" id="bidDate" value="2549-10-10" onchange="saveData()"></div>
+      <div class="form-group"><label>วันเริ่มสัญญา</label><input type="date" id="startDate" value="2559-05-25" onchange="saveData()"></div>
+      <div class="form-group"><label>วันสิ้นสุดสัญญา</label><input type="date" id="endDate" value="2561-06-25" onchange="saveData()"></div>
+      <div class="form-group"><label>วันที่ส่งงานงวดสุดท้าย</label><input type="date" id="finalDeliveryDate" value="2561-07-07" onchange="saveData()"></div>
+      <div class="form-group"><label>วันที่ครบ 90 วันหลังส่งมอบงาน</label><input type="date" id="date90Days" value="2561-10-05" onchange="saveData()"></div>
+      <div class="form-group"><label>วันที่ผู้รับจ้างขอเงินชดเชย</label><input type="date" id="claimDate" value="2561-09-15" onchange="saveData()"></div>
     </div>
   </div>
 
@@ -328,10 +330,10 @@
       <thead>
         <tr>
           <th width="8%" class="text-center">งวดที่</th>
-          <th width="12%">วันที่ส่งมอบ</th>
+          <th width="15%">วันที่ส่งมอบ</th>
           <th width="14%" class="text-right">ค่างานทั้งหมด</th>
           <th width="14%" class="text-right">ไม่อยู่ในข่าย</th>
-          <th width="24%">สูตรค่า K ที่ใช้</th>
+          <th width="21%">สูตรค่า K ที่ใช้</th>
           <th width="14%" class="text-center">ดัชนีเดือนที่ส่งมอบ</th>
           <th width="14%" class="text-center">จัดการ</th>
         </tr>
@@ -369,7 +371,7 @@
       <tr>
         <td><b>ผู้รับจ้าง:</b></td><td id="rContractor"></td>
         <td><b>สัญญาเริ่ม:</b></td><td id="rStartDate"></td>
-        <td><b>สัญญาสิ้นสุด:</b></td><td id="rEndDate"></td>
+        <td><b>สัญญาสินสุด:</b></td><td id="rEndDate"></td>
       </tr>
     </table>
 
@@ -420,6 +422,28 @@
 </div>
 
 <script>
+  // ฟังก์ชันแปลงรูปแบบวันที่จาก YYYY-MM-DD เป็น "วันที่ เดือน พ.ศ." สำหรับแสดงผลในรายงาน
+  function formatDateToThai(dateString) {
+    if (!dateString) return "";
+    const parts = dateString.split('-');
+    if (parts.length !== 3) return dateString;
+    
+    let year = parseInt(parts[0], 10);
+    // หากปีกรอบยังไม่ถึง 2500 แสดงว่าบันทึกมาเป็น ค.ศ. ให้บวกเพิ่ม 543
+    if (year < 2500) {
+      year += 543;
+    }
+    const monthIndex = parseInt(parts[1], 10) - 1;
+    const day = parseInt(parts[2], 10);
+    
+    const thaiMonths = [
+      "ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.",
+      "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."
+    ];
+    
+    return `${day} ${thaiMonths[monthIndex]} ${year}`;
+  }
+
   const FORMULAS = {
     "K1_1": { name: "1.1 งานอาคาร", const: 0.25, terms: [ { key: "I", coeff: 0.15, label: "ดัชนีผู้บริโภค (I)" }, { key: "C", coeff: 0.10, label: "ดัชนีซีเมนต์ (C)" }, { key: "M", coeff: 0.40, label: "ดัชนีวัสดุก่อสร้าง (M)" }, { key: "S", coeff: 0.10, label: "ดัชนีเหล็ก (S)" } ] },
     "K2_1": { name: "2.1 งานดิน", const: 0.30, terms: [ { key: "I", coeff: 0.10, label: "ดัชนีผู้บริโภค (I)" }, { key: "E", coeff: 0.40, label: "ดัชนีเครื่องจักร (E)" }, { key: "F", coeff: 0.20, label: "ดัชนีน้ำมันดีเซล (F)" } ] },
@@ -458,9 +482,10 @@
     "K5_9_2": { name: "5.9.2 งานสายส่งแรงสูง 69 - 115 KV (ผู้รับจ้างจัดหาวัสดุ) (กภภ.)", const: 0.45, terms: [ { key: "I", coeff: 0.05, label: "ดัชนีผู้บริโภค (I)" }, { key: "M", coeff: 0.20, label: "ดัชนีวัสดุก่อสร้าง (M)" }, { key: "F", coeff: 0.05, label: "ดัชนีน้ำมันดีเซล (F)" }, { key: "W", coeff: 0.25, label: "ดัชนีสายไฟฟ้า (W)" } ] }
   };
 
+  // เปลี่ยนปีใน defaultPeriods ให้เป็น พ.ศ.
   const defaultPeriods = [
-    { id: 1, date: "30 มิ.ย. 2559", po: 1400000, nonEligiblePo: 250000, formulaKey: "K2_1", indices: { I: 105.0, E: 108.0, F: 112.5 } },
-    { id: 2, date: "29 ก.ค. 2559", po: 5000000, nonEligiblePo: 20000, formulaKey: "K2_1", indices: { I: 106.0, E: 108.0, F: 112.5 } }
+    { id: 1, date: "2559-06-30", po: 1400000, nonEligiblePo: 250000, formulaKey: "K2_1", indices: { I: 105.0, E: 108.0, F: 112.5 } },
+    { id: 2, date: "2559-07-29", po: 5000000, nonEligiblePo: 20000, formulaKey: "K2_1", indices: { I: 106.0, E: 108.0, F: 112.5 } }
   ];
 
   let periods = [];
@@ -527,7 +552,7 @@
       tbody.innerHTML += `
         <tr>
           <td><input type="number" class="text-center" value="${p.id}" onchange="periods[${index}].id = parseInt(this.value)||0; saveData();"></td>
-          <td><input type="text" value="${p.date}" onchange="periods[${index}].date = this.value; saveData();"></td>
+          <td><input type="date" value="${p.date}" onchange="periods[${index}].date = this.value; saveData();"></td>
           <td><input type="number" class="text-right" value="${p.po}" onchange="periods[${index}].po = parseFloat(this.value)||0; saveData();"></td>
           <td><input type="number" class="text-right" value="${p.nonEligiblePo}" onchange="periods[${index}].nonEligiblePo = parseFloat(this.value)||0; saveData();"></td>
           <td>
@@ -556,9 +581,10 @@
 
   function addPeriod() {
     const nextId = periods.length > 0 ? Math.max(...periods.map(p => p.id || 0)) + 1 : 1;
+    const today = new Date().toISOString().split('T')[0];
     periods.push({
       id: nextId,
-      date: "",
+      date: today,
       po: 0,
       nonEligiblePo: 0,
       formulaKey: "K1_1",
@@ -637,6 +663,7 @@
     periods.forEach(p => {
       const eligiblePo = p.po - p.nonEligiblePo;
       const formula = FORMULAS[p.formulaKey];
+      const thaiFormattedDate = formatDateToThai(p.date);
 
       if (p.formulaKey === 'K4_7') {
         const baseVal = parseFloat(document.getElementById('base_Co')?.value) || 100.0;
@@ -669,7 +696,7 @@
         summaryTbody.innerHTML += `
           <tr>
             <td class="text-center">${p.id}</td>
-            <td class="text-center">${p.date}</td>
+            <td class="text-center">${thaiFormattedDate}</td>
             <td class="text-right">${p.po.toLocaleString()}</td>
             <td class="text-right">${p.nonEligiblePo.toLocaleString()}</td>
             <td class="text-right">${eligiblePo.toLocaleString()}</td>
@@ -742,7 +769,7 @@
       summaryTbody.innerHTML += `
         <tr>
           <td class="text-center">${p.id}</td>
-          <td class="text-center">${p.date}</td>
+          <td class="text-center">${thaiFormattedDate}</td>
           <td class="text-right">${p.po.toLocaleString()}</td>
           <td class="text-right">${p.nonEligiblePo.toLocaleString()}</td>
           <td class="text-right">${eligiblePo.toLocaleString()}</td>
@@ -763,12 +790,14 @@
     document.getElementById('rContractNo').innerText = document.getElementById('contractNo').value;
     document.getElementById('rContractor').innerText = document.getElementById('contractor').value;
     document.getElementById('rContractValue').innerText = Number(document.getElementById('contractValue').value).toLocaleString() + ' บาท';
-    document.getElementById('rBidDate').innerText = document.getElementById('bidDate').value;
-    document.getElementById('rStartDate').innerText = document.getElementById('startDate').value;
-    document.getElementById('rEndDate').innerText = document.getElementById('endDate').value;
-    document.getElementById('rFinalDeliveryDate').innerText = document.getElementById('finalDeliveryDate').value;
-    document.getElementById('rDate90Days').innerText = document.getElementById('date90Days').value;
-    document.getElementById('rClaimDate').innerText = document.getElementById('claimDate').value;
+    
+    // แปลงวันที่สำหรับแสดงผลในรายงานสรุป
+    document.getElementById('rBidDate').innerText = formatDateToThai(document.getElementById('bidDate').value);
+    document.getElementById('rStartDate').innerText = formatDateToThai(document.getElementById('startDate').value);
+    document.getElementById('rEndDate').innerText = formatDateToThai(document.getElementById('endDate').value);
+    document.getElementById('rFinalDeliveryDate').innerText = formatDateToThai(document.getElementById('finalDeliveryDate').value);
+    document.getElementById('rDate90Days').innerText = formatDateToThai(document.getElementById('date90Days').value);
+    document.getElementById('rClaimDate').innerText = formatDateToThai(document.getElementById('claimDate').value);
 
     document.getElementById('totalPo').innerText = sumPo.toLocaleString();
     document.getElementById('totalNonEligible').innerText = sumNonEligible.toLocaleString();
@@ -788,6 +817,8 @@
     const c = p.calcData;
     const upperLimit = 1 + (c.criteriaPercent / 100);
     const lowerLimit = 1 - (c.criteriaPercent / 100);
+    const periodDateFormatted = formatDateToThai(p.date);
+    const bidDateFormatted = formatDateToThai(document.getElementById('bidDate').value);
 
     const indexDescriptions = {
       "I": "ดัชนีราคาผู้บริโภคทั่วไปของประเทศ จัดทำโดยกระทรวงพาณิชย์",
@@ -888,7 +919,7 @@
         </div>
 
         <table style="border:none; margin-bottom: 10px;">
-          <tr style="border:none;"><td style="border:none;"><b>ประจำงวดงานที่:</b> ${p.id}</td><td style="border:none;"><b>วันที่ส่งมอบงาน:</b> ${p.date}</td></tr>
+          <tr style="border:none;"><td style="border:none;"><b>ประจำงวดงานที่:</b> ${p.id}</td><td style="border:none;"><b>วันที่ส่งมอบงาน:</b> ${periodDateFormatted}</td></tr>
           <tr style="border:none;"><td style="border:none;" colspan="2"><b>ประเภทงาน/สูตรที่ใช้:</b> ${c.formulaName}</td></tr>
         </table>
 
@@ -904,8 +935,8 @@
           <thead>
             <tr>
               <th>รายการดัชนีราคา</th>
-              <th class="text-center">ดัชนีวันเปิดซองราคา (${document.getElementById('bidDate').value})</th>
-              <th class="text-center">ดัชนีเดือนที่ส่งมอบงาน (${p.date})</th>
+              <th class="text-center">ดัชนีวันเปิดซองราคา (${bidDateFormatted})</th>
+              <th class="text-center">ดัชนีเดือนที่ส่งมอบงาน (${periodDateFormatted})</th>
               <th class="text-center">อัตราส่วน (ปัดเศษ 3 ตำแหน่ง)</th>
               <th class="text-center">สัมประสิทธิ์</th>
               <th class="text-center">ผลคูณ</th>
