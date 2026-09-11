@@ -656,7 +656,7 @@
     document.getElementById('reportSection').style.display = 'block';
   }
 
-  // พิมพ์รายงานคำนวณแยกงวด (แสดงสูตรและวิธีคำนวณละเอียด)
+  // พิมพ์รายงานคำนวณแยกงวด (แสดงสูตร วิธีคำนวณ และตารางอธิบายความหมายดัชนี)
   function printSinglePeriod(id) {
     const p = periods.find(item => item.id === id);
     if (!p || !p.calcData) {
@@ -667,6 +667,23 @@
     const c = p.calcData;
     const upperLimit = 1 + (c.criteriaPercent / 100);
     const lowerLimit = 1 - (c.criteriaPercent / 100);
+
+    // คำอธิบายความหมายของดัชนีราคาแต่ละตัว
+    const indexDescriptions = {
+      "I": "ดัชนีราคาผู้บริโภคทั่วไปของประเทศ จัดทำโดยกระทรวงพาณิชย์",
+      "C": "ดัชนีราคาซีเมนต์ จัดทำโดยกระทรวงพาณิชย์",
+      "M": "ดัชนีราคาวัสดุก่อสร้าง (ไม่รวมเหล็กและซีเมนต์) จัดทำโดยกระทรวงพาณิชย์",
+      "S": "ดัชนีราคาเหล็กและผลิตภัณฑ์เหล็ก จัดทำโดยกระทรวงพาณิชย์",
+      "E": "ดัชนีราคาเครื่องจักรกลและอุปกรณ์ จัดทำโดยกระทรวงพาณิชย์",
+      "F": "ดัชนีราคาน้ำมันดีเซลหมุนเร็ว จัดทำโดยกระทรวงพาณิชย์",
+      "A": "ดัชนีราคาแอสฟัลต์ จัดทำโดยกระทรวงพาณิชย์",
+      "G": "ดัชนีราคายางตระกูล G จัดทำโดยกระทรวงพาณิชย์",
+      "AC": "ดัชนีราคาท่อซีเมนต์ใยหิน จัดทำโดยกระทรวงพาณิชย์",
+      "PVC": "ดัชนีราคาท่อ PVC จัดทำโดยกระทรวงพาณิชย์",
+      "PE": "ดัชนีราคาท่อ PE จัดทำโดยกระทรวงพาณิชย์",
+      "GIP": "ดัชนีราคาท่อเหล็กอาบสังกะสี จัดทำโดยกระทรวงพาณิชย์",
+      "W": "ดัชนีราคาสายไฟฟ้า จัดทำโดยกระทรวงพาณิชย์"
+    };
 
     // สร้างสูตรในรูปแบบสัญลักษณ์
     let formulaSymbolic = "K = " + (c.formulaConst > 0 ? c.formulaConst.toFixed(2) : "");
@@ -700,7 +717,10 @@
     }
 
     let rowsHtml = '';
+    let descRowsHtml = '';
+
     c.termResults.forEach(t => {
+      // แถวตารางคำนวณ
       rowsHtml += `
         <tr>
           <td>${t.label}</td>
@@ -709,6 +729,16 @@
           <td class="text-center">${t.ratio.toFixed(3)}</td>
           <td class="text-center">${t.coeff.toFixed(2)}</td>
           <td class="text-center">${t.product.toFixed(3)}</td>
+        </tr>
+      `;
+
+      // แถวตารางคำอธิบาย/ความหมายดัชนี
+      const descText = indexDescriptions[t.key] || `ดัชนีราคา${t.label} จัดทำโดยกระทรวงพาณิชย์`;
+      descRowsHtml += `
+        <tr>
+          <td class="text-center"><b>${t.key}o / ${t.key}t</b></td>
+          <td><b>${t.label}</b></td>
+          <td>${descText}</td>
         </tr>
       `;
     });
@@ -731,6 +761,7 @@
           .highlight { font-weight: bold; background-color: #e2e8f0; }
           .calc-box { background: #f8fafc; border: 1px solid #cbd5e0; padding: 12px 15px; border-radius: 6px; margin: 15px 0; font-size: 13.5px; }
           .calc-step { margin-bottom: 6px; }
+          .section-heading { font-weight: bold; font-size: 15px; margin-top: 20px; margin-bottom: 5px; color: #1a365d; }
           @media print { .no-print { display: none; } }
         </style>
       </head>
@@ -778,6 +809,21 @@
               <td colspan="5" class="text-right"><b>ผลรวมค่า K (ปัดเศษ 3 ตำแหน่ง)</b></td>
               <td class="text-center"><b>${c.kValue.toFixed(3)}</b></td>
             </tr>
+          </tbody>
+        </table>
+
+        <!-- ตารางคำอธิบาย/ความหมายของตัวดัชนีราคาที่ใช้ในงวดนี้ -->
+        <div class="section-heading">📌 รายละเอียดและคำอธิบายดัชนีราคาที่ใช้คำนวณ</div>
+        <table>
+          <thead>
+            <tr>
+              <th width="15%" class="text-center">สัญลักษณ์</th>
+              <th width="30%">ชื่อดัชนีราคา</th>
+              <th width="55%">ความหมาย / คำอธิบายแหล่งข้อมูล</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${descRowsHtml}
           </tbody>
         </table>
 
