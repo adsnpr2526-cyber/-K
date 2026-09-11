@@ -1,160 +1,491 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบคำนวณค่า K และออกรายงานแนบท้ายสัญญา</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body { font-family: 'Sarabun', sans-serif; background-color: #f8f9fa; padding: 20px; }
-        .card { box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); margin-bottom: 20px; }
-        .card-header { font-weight: bold; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบคำนวณค่า K และออกรายงานแนบท้ายสัญญา</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; font-family: 'Sarabun', sans-serif; }
+    body { background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
+    .container { max-width: 1100px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+    h1, h2, h3 { color: #1a365d; }
+    h1 { text-align: center; margin-bottom: 5px; font-size: 24px; }
+    .subtitle { text-align: center; color: #666; margin-bottom: 25px; font-size: 14px; }
+    
+    .section { background: #fafafa; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px; margin-bottom: 20px; }
+    .section-title { font-weight: 700; font-size: 16px; margin-bottom: 12px; color: #2b6cb0; display: flex; align-items: center; gap: 8px; }
+    
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+    
+    .form-group { display: flex; flex-direction: column; }
+    .form-group label { font-size: 13px; font-weight: 600; margin-bottom: 4px; color: #4a5568; }
+    .form-group input, .form-group select { padding: 8px 10px; border: 1px solid #cbd5e0; border-radius: 6px; font-size: 14px; }
+    
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; background: #fff; }
+    th, td { border: 1px solid #cbd5e0; padding: 8px 10px; text-align: left; font-size: 13px; }
+    th { background: #ebf8ff; color: #2c5282; font-weight: 700; }
+    .text-right { text-align: right; }
+    .text-center { text-align: center; }
+
+    .btn { padding: 8px 14px; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .btn-primary { background: #3182ce; color: white; }
+    .btn-primary:hover { background: #2b6cb0; }
+    .btn-success { background: #38a169; color: white; }
+    .btn-success:hover { background: #2f855a; }
+    .btn-danger { background: #e53e3e; color: white; }
+    .btn-danger:hover { background: #c53030; }
+    .btn-sm { padding: 4px 8px; font-size: 12px; }
+
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 100; }
+    .modal-content { background: white; padding: 20px; border-radius: 10px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
+
+    @media print {
+      .no-print { display: none !important; }
+      body { background: white; padding: 0; }
+      .container { box-shadow: none; padding: 0; width: 100%; max-width: 100%; }
+      .section { border: none; padding: 0; margin-bottom: 10px; }
+    }
+  </style>
 </head>
 <body>
 
-<div class="container-fluid">
-    <h3 class="mb-4">📊 ระบบคำนวณค่า K และออกรายงานแนบท้ายสัญญา</h3>
+<div class="container">
+  <h1>📊 ระบบคำนวณค่า K และออกรายงานแนบท้ายสัญญา</h1>
+  <p class="subtitle">โปรแกรมคำนวณเงินชดเชยค่างานก่อสร้างตามมติ ครม. (รองรับการพิมพ์คำนวณแยกรายงวด)</p>
 
-    <!-- Section 3: รายการงวดงานก่อสร้าง -->
-    <div class="card">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <span>📝 3. รายการงวดงานก่อสร้าง</span>
-            <button class="btn btn-light btn-sm" onclick="addRow()">➕ เพิ่มรายการงวดงาน</button>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered align-middle" id="workTable">
-                    <thead class="table-light">
-                        <tr class="text-center">
-                            <th style="width: 5%;">งวดที่</th>
-                            <th style="width: 15%;">วันที่ส่งมอบ</th>
-                            <th style="width: 18%;">ค่างานทั้งหมด (บาท)</th>
-                            <th style="width: 18%;">ไม่อยู่ในข่าย (บาท)</th>
-                            <th style="width: 25%;">สูตรค่า K</th>
-                            <th style="width: 10%;">ดัชนีประจำงวด</th>
-                            <th style="width: 9%;">จัดการ</th>
-                        </tr>
-                    </thead>
-                    <tbody id="workTableBody">
-                        <tr>
-                            <td class="text-center">1</td>
-                            <td><input type="text" class="form-control" value="30 มิ.ย. 2559"></td>
-                            <td><input type="number" class="form-control" value="1400000"></td>
-                            <td><input type="number" class="form-control" value="250000"></td>
-                            <td>
-                                <select class="form-select k-formula-select">
-                                    <optgroup label="หมวดงานอาคาร">
-                                        <option value="K1" selected>K1 - งานอาคาร</option>
-                                    </optgroup>
-                                    <optgroup label="หมวดงานดิน">
-                                        <option value="K2">K2 - งานดิน</option>
-                                        <option value="K3">K3 - งานระเบิดหิน</option>
-                                    </optgroup>
-                                    <optgroup label="หมวดงานทาง">
-                                        <option value="K4">K4 - งานผิวทาง Prime/Tack Coat</option>
-                                        <option value="K5">K5 - งานผิวทาง Surface Treatment</option>
-                                        <option value="K6">K6 - งานผิวทาง Asphaltic Concrete</option>
-                                        <option value="K7">K7 - งานผิวทาง ค.ส.ล.</option>
-                                        <option value="K8">K8 - งานสะพานและท่อเหลี่ยม</option>
-                                    </optgroup>
-                                    <optgroup label="หมวดงานชลประทาน">
-                                        <option value="K9">K9 - งานคลองส่งน้ำคอนกรีต / เขื่อนคอนกรีต</option>
-                                        <option value="K10">K10 - งานอาคารชลประทานอื่นๆ</option>
-                                    </optgroup>
-                                    <optgroup label="หมวดงานระบบท่อ">
-                                        <option value="K11">K11 - งานวางท่อเหล็กเหนียว / HDPE</option>
-                                        <option value="K12">K12 - งานวางท่อ ค.ส.ล. / PVC</option>
-                                    </optgroup>
-                                </select>
-                            </td>
-                            <td class="text-center">
-                                <button class="btn btn-info btn-sm text-white">⚙️ ตั้งค่าดัชนีงวด</button>
-                            </td>
-                            <td class="text-center">
-                                <button class="btn btn-danger btn-sm" onclick="deleteRow(this)">🗑️ ลบ</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="mt-3">
-                <button class="btn btn-success" onclick="calculateAll()">🚀 คำนวณทั้งหมด และประมวลผลรายงาน</button>
-            </div>
-        </div>
+  <!-- 1. ข้อมูลสัญญา -->
+  <div class="section no-print">
+    <div class="section-title">🏛️ 1. ข้อมูลสัญญาและหน่วยงาน</div>
+    <div class="grid-2">
+      <div class="form-group"><label>กระทรวง</label><input type="text" id="ministry" value="กระทรวงเกษตรและสหกรณ์"></div>
+      <div class="form-group"><label>กรม / หน่วยงาน</label><input type="text" id="department" value="กรมชลประทาน"></div>
+      <div class="form-group"><label>ชื่อโครงการ</label><input type="text" id="projectName" value="โครงการแก้ไขปัญหาการขาดแคลนน้ำอุปโภคบริโภค"></div>
+      <div class="form-group"><label>สัญญาเลขที่</label><input type="text" id="contractNo" value="3/2550"></div>
+      <div class="form-group"><label>ผู้รับจ้าง</label><input type="text" id="contractor" value="กิจการร่วมค้า AAAAAA"></div>
+      <div class="form-group"><label>ค่างานตามสัญญา (บาท)</label><input type="number" id="contractValue" value="100000000"></div>
+      <div class="form-group"><label>วันที่เปิดซองประกวดราคา</label><input type="text" id="bidDate" value="10 ต.ค. พ.ศ.2549"></div>
+      <div class="form-group"><label>วันเริ่มสัญญา</label><input type="text" id="startDate" value="25 พ.ค. 2559"></div>
+      <div class="form-group"><label>วันสิ้นสุดสัญญา (เดิม)</label><input type="text" id="endDate" value="25 มิ.ย. 2561"></div>
+      <div class="form-group"><label>วันที่ส่งงานงวดสุดท้าย</label><input type="text" id="finalDeliveryDate" value="7 ก.ค. 2561"></div>
     </div>
+  </div>
+
+  <!-- 2. เงื่อนไข และ ดัชนีฐาน -->
+  <div class="section no-print">
+    <div class="section-title">⚙️ 2. เงื่อนไขและดัชนีราคาฐาน (Base Indices: Io, Co, Mo, So)</div>
+    <div class="grid-2" style="margin-bottom: 12px;">
+      <div class="form-group">
+        <label>เงื่อนไขการปรับราคา</label>
+        <select id="criteriaPercent">
+          <option value="4">เกณฑ์ทั่วไป ±4% (ปรับราคาเมื่อ K เปลี่ยนแปลงเกิน 4%)</option>
+          <option value="2">เกณฑ์พิเศษ ±2% (ปรับราคาเมื่อ K เปลี่ยนแปลงเกิน 2%)</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid-4">
+      <div class="form-group"><label>ดัชนีฐาน Io (ทั่วไป)</label><input type="number" step="0.1" id="baseIo" value="212.8"></div>
+      <div class="form-group"><label>ดัชนีฐาน Co (ซีเมนต์)</label><input type="number" step="0.1" id="baseCo" value="100.0"></div>
+      <div class="form-group"><label>ดัชนีฐาน Mo (วัสดุ)</label><input type="number" step="0.1" id="baseMo" value="244.8"></div>
+      <div class="form-group"><label>ดัชนีฐาน So (เหล็ก)</label><input type="number" step="0.1" id="baseSo" value="100.0"></div>
+    </div>
+  </div>
+
+  <!-- 3. รายการงวดงาน -->
+  <div class="section no-print">
+    <div class="section-title" style="justify-content: space-between;">
+      <span>📝 3. รายการงวดงานก่อสร้าง</span>
+      <button class="btn btn-primary btn-sm" onclick="addPeriod()">➕ เพิ่มรายการงวดงาน</button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th width="8%" class="text-center">งวดที่</th>
+          <th width="15%">วันที่ส่งมอบ</th>
+          <th width="15%" class="text-right">ค่างานทั้งหมด (บาท)</th>
+          <th width="15%" class="text-right">ไม่อยู่ในข่าย (บาท)</th>
+          <th width="15%">สูตรค่า K</th>
+          <th width="15%">ดัชนีประจำงวด (It,Ct,Mt,St)</th>
+          <th width="17%" class="text-center">จัดการ</th>
+        </tr>
+      </thead>
+      <tbody id="periodTableBody">
+        <!-- จะถูกเติมด้วย JS -->
+      </tbody>
+    </table>
+    <div style="margin-top: 15px; text-align: right;">
+      <button class="btn btn-success" onclick="calculateAll()">🚀 คำนวณทั้งหมด และประมวลผลรายงาน</button>
+    </div>
+  </div>
+
+  <!-- 4. แสดงผลลัพธ์ ตารางสรุปแบบฟอร์มที่ 2 -->
+  <div class="section" id="reportSection" style="display:none;">
+    <div class="section-title" style="justify-content: space-between;">
+      <span>📄 แบบฟอร์มที่ 2 การคำนวณเงินชดเชยเพิ่มเติมค่างานก่อสร้าง (ภาพรวม)</span>
+      <button class="btn btn-primary btn-sm no-print" onclick="window.print()">🖨️ พิมพ์รายงานสรุป</button>
+    </div>
+    
+    <table style="margin-bottom: 15px;">
+      <tr>
+        <td width="15%"><b>กระทรวง:</b></td><td width="35%" id="rMinistry"></td>
+        <td width="15%"><b>ชื่อโครงการ:</b></td><td width="35%" id="rProjectName"></td>
+      </tr>
+      <tr>
+        <td><b>กรม:</b></td><td id="rDepartment"></td>
+        <td><b>วันที่เปิดซอง:</b></td><td id="rBidDate"></td>
+      </tr>
+      <tr>
+        <td><b>สัญญาเลขที่:</b></td><td id="rContractNo"></td>
+        <td><b>ค่างานตามสัญญา:</b></td><td id="rContractValue"></td>
+      </tr>
+      <tr>
+        <td><b>ผู้รับจ้าง:</b></td><td id="rContractor"></td>
+        <td><b>ระยะเวลาสัญญา:</b></td><td id="rPeriod"></td>
+      </tr>
+    </table>
+
+    <table>
+      <thead>
+        <tr>
+          <th rowspan="2" class="text-center">งวด</th>
+          <th rowspan="2" class="text-center">วันที่</th>
+          <th colspan="3" class="text-center">ค่างาน (บาท)</th>
+          <th rowspan="2" class="text-center">สูตร K</th>
+          <th rowspan="2" class="text-center">ค่า K</th>
+          <th rowspan="2" class="text-center">ส่วนต่าง K</th>
+          <th rowspan="2" class="text-right">เงินชดเชย (บาท)</th>
+          <th rowspan="2" class="text-center no-print">พิมพ์ใบรายงวด</th>
+        </tr>
+        <tr>
+          <th class="text-right">ทั้งหมด</th>
+          <th class="text-right">ไม่อยู่ในข่าย</th>
+          <th class="text-right">ได้รับพิจารณา</th>
+        </tr>
+      </thead>
+      <tbody id="summaryTableBody">
+      </tbody>
+      <tfoot>
+        <tr style="font-weight:bold; background:#edf2f7;">
+          <td colspan="2" class="text-center">รวมทั้งสิ้น</td>
+          <td class="text-right" id="totalPo">0.00</td>
+          <td class="text-right" id="totalNonEligible">0.00</td>
+          <td class="text-right" id="totalEligible">0.00</td>
+          <td colspan="3"></td>
+          <td class="text-right" id="totalCompensation" style="color:#2b6cb0; font-size:15px;">0.00</td>
+          <td class="no-print"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
+
+<!-- Modal แก้ไขดัชนีประจำงวด -->
+<div class="modal" id="indexModal">
+  <div class="modal-content">
+    <h3>⚙️ แก้ไขดัชนีราคาประจำงวด <span id="modalPeriodId"></span></h3>
+    <div class="grid-2">
+      <div class="form-group"><label>It (ดัชนีทั่วไปงวดนี้)</label><input type="number" step="0.1" id="mIt"></div>
+      <div class="form-group"><label>Ct (ซีเมนต์งวดนี้)</label><input type="number" step="0.1" id="mCt"></div>
+      <div class="form-group"><label>Mt (วัสดุงวดนี้)</label><input type="number" step="0.1" id="mMt"></div>
+      <div class="form-group"><label>St (เหล็กงวดนี้)</label><input type="number" step="0.1" id="mSt"></div>
+    </div>
+    <div style="margin-top: 15px; text-align: right;">
+      <button class="btn btn-danger" onclick="closeModal()">ยกเลิก</button>
+      <button class="btn btn-success" onclick="saveModalIndices()">บันทึกดัชนี</button>
+    </div>
+  </div>
 </div>
 
 <script>
-    // ตัวเลือกสูตร K ทั้งหมดสำหรับสร้างแถวใหม่
-    const kOptionsHTML = `
-        <optgroup label="หมวดงานอาคาร">
-            <option value="K1">K1 - งานอาคาร</option>
-        </optgroup>
-        <optgroup label="หมวดงานดิน">
-            <option value="K2">K2 - งานดิน</option>
-            <option value="K3">K3 - งานระเบิดหิน</option>
-        </optgroup>
-        <optgroup label="หมวดงานทาง">
-            <option value="K4">K4 - งานผิวทาง Prime/Tack Coat</option>
-            <option value="K5">K5 - งานผิวทาง Surface Treatment</option>
-            <option value="K6">K6 - งานผิวทาง Asphaltic Concrete</option>
-            <option value="K7">K7 - งานผิวทาง ค.ส.ล.</option>
-            <option value="K8">K8 - งานสะพานและท่อเหลี่ยม</option>
-        </optgroup>
-        <optgroup label="หมวดงานชลประทาน">
-            <option value="K9">K9 - งานคลองส่งน้ำคอนกรีต / เขื่อนคอนกรีต</option>
-            <option value="K10">K10 - งานอาคารชลประทานอื่นๆ</option>
-        </optgroup>
-        <optgroup label="หมวดงานระบบท่อ">
-            <option value="K11">K11 - งานวางท่อเหล็กเหนียว / HDPE</option>
-            <option value="K12">K12 - งานวางท่อ ค.ส.ล. / PVC</option>
-        </optgroup>
+  // สูตรค่า K ตัวอย่าง (สูตรมาตรฐาน K1)
+  const FORMULA_K1 = {
+    name: "K1 - งานอาคาร",
+    calc: (rI, rC, rM, rS) => 0.25 + (0.15 * rI) + (0.10 * rC) + (0.40 * rM) + (0.10 * rS),
+    coeffs: { const: 0.25, I: 0.15, C: 0.10, M: 0.40, S: 0.10 }
+  };
+
+  // ข้อมูลรายการงวดงานเริ่มต้น
+  let periods = [
+    { id: 1, date: "30 มิ.ย. 2559", po: 1400000, nonEligiblePo: 250000, formula: "K1", indices: { It: 221.0, Ct: 105.0, Mt: 260.3, St: 105.0 } },
+    { id: 2, date: "29 ก.ค. 2559", po: 5000000, nonEligiblePo: 20000, formula: "K1", indices: { It: 221.0, Ct: 105.0, Mt: 260.3, St: 105.0 } }
+  ];
+
+  let currentEditingPeriodId = null;
+
+  // โหลดข้อมูลตารางงวดงานแรกเริ่ม
+  function renderPeriodTable() {
+    const tbody = document.getElementById('periodTableBody');
+    tbody.innerHTML = '';
+
+    periods.forEach((p, index) => {
+      tbody.innerHTML += `
+        <tr>
+          <td class="text-center">${p.id}</td>
+          <td><input type="text" value="${p.date}" onchange="periods[${index}].date = this.value"></td>
+          <td><input type="number" class="text-right" value="${p.po}" onchange="periods[${index}].po = parseFloat(this.value)||0"></td>
+          <td><input type="number" class="text-right" value="${p.nonEligiblePo}" onchange="periods[${index}].nonEligiblePo = parseFloat(this.value)||0"></td>
+          <td>
+            <select onchange="periods[${index}].formula = this.value">
+              <option value="K1" ${p.formula === 'K1' ? 'selected' : ''}>K1 - งานอาคาร</option>
+            </select>
+          </td>
+          <td class="text-center">
+            <button class="btn btn-primary btn-sm" onclick="openIndexModal(${p.id})">⚙️ ตั้งค่าดัชนีงวด</button>
+          </td>
+          <td class="text-center">
+            <button class="btn btn-danger btn-sm" onclick="deletePeriod(${p.id})">🗑️ ลบ</button>
+          </td>
+        </tr>
+      `;
+    });
+  }
+
+  function addPeriod() {
+    const nextId = periods.length > 0 ? Math.max(...periods.map(p => p.id)) + 1 : 1;
+    periods.push({
+      id: nextId,
+      date: "",
+      po: 0,
+      nonEligiblePo: 0,
+      formula: "K1",
+      indices: { It: 212.8, Ct: 100.0, Mt: 244.8, St: 100.0 }
+    });
+    renderPeriodTable();
+  }
+
+  function deletePeriod(id) {
+    periods = periods.filter(p => p.id !== id);
+    renderPeriodTable();
+  }
+
+  function openIndexModal(id) {
+    currentEditingPeriodId = id;
+    const p = periods.find(item => item.id === id);
+    document.getElementById('modalPeriodId').innerText = id;
+    document.getElementById('mIt').value = p.indices.It;
+    document.getElementById('mCt').value = p.indices.Ct;
+    document.getElementById('mMt').value = p.indices.Mt;
+    document.getElementById('mSt').value = p.indices.St;
+    document.getElementById('indexModal').style.display = 'flex';
+  }
+
+  function closeModal() {
+    document.getElementById('indexModal').style.display = 'none';
+  }
+
+  function saveModalIndices() {
+    const p = periods.find(item => item.id === currentEditingPeriodId);
+    if(p) {
+      p.indices.It = parseFloat(document.getElementById('mIt').value) || 0;
+      p.indices.Ct = parseFloat(document.getElementById('mCt').value) || 0;
+      p.indices.Mt = parseFloat(document.getElementById('mMt').value) || 0;
+      p.indices.St = parseFloat(document.getElementById('mSt').value) || 0;
+    }
+    closeModal();
+    alert('บันทึกดัชนีประจำงวดสำเร็จ!');
+  }
+
+  // ฟังก์ชันคำนวณหลัก
+  function calculateAll() {
+    const baseIndices = {
+      Io: parseFloat(document.getElementById('baseIo').value) || 1,
+      Co: parseFloat(document.getElementById('baseCo').value) || 1,
+      Mo: parseFloat(document.getElementById('baseMo').value) || 1,
+      So: parseFloat(document.getElementById('baseSo').value) || 1,
+    };
+    const criteriaPercent = parseFloat(document.getElementById('criteriaPercent').value);
+    const upperLimit = 1 + (criteriaPercent / 100); // 1.040 หรือ 1.020
+    const lowerLimit = 1 - (criteriaPercent / 100); // 0.960 หรือ 0.980
+
+    const summaryTbody = document.getElementById('summaryTableBody');
+    summaryTbody.innerHTML = '';
+
+    let sumPo = 0, sumNonEligible = 0, sumEligible = 0, sumComp = 0;
+
+    periods.forEach(p => {
+      const eligiblePo = p.po - p.nonEligiblePo;
+
+      // 1. คำนวณอัตราส่วนดัชนี (ปัดเศษทศนิยม 3 ตำแหน่ง)
+      const rI = Number((p.indices.It / baseIndices.Io).toFixed(3));
+      const rC = Number((p.indices.Ct / baseIndices.Co).toFixed(3));
+      const rM = Number((p.indices.Mt / baseIndices.Mo).toFixed(3));
+      const rS = Number((p.indices.St / baseIndices.So).toFixed(3));
+
+      // 2. คำนวณค่า K Raw & Rounded
+      const rawK = FORMULA_K1.calc(rI, rC, rM, rS);
+      const kValue = Number(rawK.toFixed(3));
+
+      // 3. คำนวณส่วนต่าง K ชดเชย
+      let kDiff = 0;
+      if (kValue > upperLimit) {
+        kDiff = Number((kValue - upperLimit).toFixed(3));
+      } else if (kValue < lowerLimit) {
+        kDiff = Number((lowerLimit - kValue).toFixed(3));
+      } else {
+        kDiff = 0;
+      }
+
+      const compensation = eligiblePo * kDiff;
+
+      // รวมยอด
+      sumPo += p.po;
+      sumNonEligible += p.nonEligiblePo;
+      sumEligible += eligiblePo;
+      sumComp += compensation;
+
+      // บันทึกค่าคำนวณกลับเข้าก้อนข้อมูลไว้พิมพ์
+      p.calcData = { eligiblePo, rI, rC, rM, rS, kValue, kDiff, compensation, baseIndices, criteriaPercent };
+
+      summaryTbody.innerHTML += `
+        <tr>
+          <td class="text-center">${p.id}</td>
+          <td class="text-center">${p.date}</td>
+          <td class="text-right">${p.po.toLocaleString()}</td>
+          <td class="text-right">${p.nonEligiblePo.toLocaleString()}</td>
+          <td class="text-right">${eligiblePo.toLocaleString()}</td>
+          <td class="text-center">${p.formula}</td>
+          <td class="text-center"><b>${kValue.toFixed(3)}</b></td>
+          <td class="text-center">${kDiff.toFixed(3)}</td>
+          <td class="text-right"><b>${compensation.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</b></td>
+          <td class="text-center no-print">
+            <button class="btn btn-primary btn-sm" onclick="printSinglePeriod(${p.id})">🖨️ รายงานงวดนี้</button>
+          </td>
+        </tr>
+      `;
+    });
+
+    // อัปเดตข้อมูลส่วนหัวรายงาน
+    document.getElementById('rMinistry').innerText = document.getElementById('ministry').value;
+    document.getElementById('rDepartment').innerText = document.getElementById('department').value;
+    document.getElementById('rProjectName').innerText = document.getElementById('projectName').value;
+    document.getElementById('rContractNo').innerText = document.getElementById('contractNo').value;
+    document.getElementById('rContractor').innerText = document.getElementById('contractor').value;
+    document.getElementById('rContractValue').innerText = Number(document.getElementById('contractValue').value).toLocaleString() + ' บาท';
+    document.getElementById('rBidDate').innerText = document.getElementById('bidDate').value;
+    document.getElementById('rPeriod').innerText = `${document.getElementById('startDate').value} ถึง ${document.getElementById('endDate').value}`;
+
+    // อัปเดตยอดรวม
+    document.getElementById('totalPo').innerText = sumPo.toLocaleString();
+    document.getElementById('totalNonEligible').innerText = sumNonEligible.toLocaleString();
+    document.getElementById('totalEligible').innerText = sumEligible.toLocaleString();
+    document.getElementById('totalCompensation').innerText = sumComp.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+    document.getElementById('reportSection').style.display = 'block';
+  }
+
+  // ฟังก์ชันเปิดพิมพ์ใบคำนวณแบบรายงวด
+  function printSinglePeriod(id) {
+    const p = periods.find(item => item.id === id);
+    if (!p || !p.calcData) {
+      alert('กรุณากดคำนวณข้อมูลก่อนออกรายงาน');
+      return;
+    }
+
+    const c = p.calcData;
+    const printWin = window.open('', '_blank');
+
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>รายงานการคำนวณค่า K - งวดที่ ${p.id}</title>
+        <style>
+          body { font-family: 'Sarabun', sans-serif; padding: 25px; line-height: 1.5; font-size: 14px; }
+          .text-center { text-align: center; }
+          .text-right { text-align: right; }
+          .header-title { font-size: 18px; font-weight: bold; margin-bottom: 5px; }
+          table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+          th, td { border: 1px solid #000; padding: 6px 8px; }
+          th { background-color: #f2f2f2; }
+          .highlight { font-weight: bold; background-color: #f7fafc; }
+          @media print { .no-print { display: none; } }
+        </style>
+      </head>
+      <body>
+        <button class="no-print" onclick="window.print()" style="padding: 8px 15px; margin-bottom: 15px; cursor:pointer;">🖨️ พิมพ์เอกสารนี้</button>
+
+        <div class="text-center">
+          <div class="header-title">แบบแสดงรายการคำนวณค่า K และเงินชดเชยค่างานก่อสร้าง</div>
+          <div>โครงการ: ${document.getElementById('projectName').value} | สัญญาเลขที่: ${document.getElementById('contractNo').value}</div>
+        </div>
+
+        <p><b>ประจำงวดงานที่:</b> ${p.id} &nbsp;&nbsp;&nbsp;&nbsp; <b>วันที่ส่งมอบงาน:</b> ${p.date}</p>
+        <p><b>สูตรคำนวณค่า K:</b> K = 0.25 + 0.15(It/Io) + 0.10(Ct/Co) + 0.40(Mt/Mo) + 0.10(St/So)</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>รายการดัชนีราคา</th>
+              <th class="text-center">ดัชนีฐาน (${document.getElementById('bidDate').value})</th>
+              <th class="text-center">ดัชนีงวด (${p.date})</th>
+              <th class="text-center">อัตราส่วน (ปัดเศษ 3 ตำแหน่ง)</th>
+              <th class="text-center">สัมประสิทธิ์</th>
+              <th class="text-center">ผลคูณ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>ดัชนีผู้บริโภค / งานทั่วไป (I)</td>
+              <td class="text-center">${c.baseIndices.Io}</td>
+              <td class="text-center">${p.indices.It}</td>
+              <td class="text-center">${c.rI.toFixed(3)}</td>
+              <td class="text-center">0.15</td>
+              <td class="text-center">${(0.15 * c.rI).toFixed(3)}</td>
+            </tr>
+            <tr>
+              <td>ดัชนีซีเมนต์ (C)</td>
+              <td class="text-center">${c.baseIndices.Co}</td>
+              <td class="text-center">${p.indices.Ct}</td>
+              <td class="text-center">${c.rC.toFixed(3)}</td>
+              <td class="text-center">0.10</td>
+              <td class="text-center">${(0.10 * c.rC).toFixed(3)}</td>
+            </tr>
+            <tr>
+              <td>ดัชนีวัสดุก่อสร้าง (M)</td>
+              <td class="text-center">${c.baseIndices.Mo}</td>
+              <td class="text-center">${p.indices.Mt}</td>
+              <td class="text-center">${c.rM.toFixed(3)}</td>
+              <td class="text-center">0.40</td>
+              <td class="text-center">${(0.40 * c.rM).toFixed(3)}</td>
+            </tr>
+            <tr>
+              <td>ดัชนีเหล็ก (S)</td>
+              <td class="text-center">${c.baseIndices.So}</td>
+              <td class="text-center">${p.indices.St}</td>
+              <td class="text-center">${c.rS.toFixed(3)}</td>
+              <td class="text-center">0.10</td>
+              <td class="text-center">${(0.10 * c.rS).toFixed(3)}</td>
+            </tr>
+            <tr>
+              <td colspan="5" class="text-right"><b>ค่าคงที่ (Constant)</b></td>
+              <td class="text-center"><b>0.250</b></td>
+            </tr>
+            <tr class="highlight">
+              <td colspan="5" class="text-right"><b>ค่า K1 ที่คำนวณได้</b></td>
+              <td class="text-center"><b>${c.kValue.toFixed(3)}</b></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h4>สรุปผลการคำนวณเงินชดเชยงวดที่ ${p.id}</h4>
+        <ul>
+          <li>ค่างานตามงวดนี้ทั้งหมด = <b>${p.po.toLocaleString()}</b> บาท</li>
+          <li>หัก ค่างานส่วนที่ไม่นำมาคิดปรับราคา = <b>${p.nonEligiblePo.toLocaleString()}</b> บาท</li>
+          <li><b>เหลือค่างานที่ได้รับพิจารณา ($P_o$) = ${c.eligiblePo.toLocaleString()}</b> บาท</li>
+          <li>ส่วนต่างค่า K หลังหักเกณฑ์ $\pm${c.criteriaPercent}% = <b>${c.kDiff.toFixed(3)}</b></li>
+          <li><b>เงินชดเชยค่างานที่คำนวณได้ = <u style="font-size: 16px;">${c.compensation.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</u> บาท</b></li>
+        </ul>
+      </body>
+      </html>
     `;
 
-    function addRow() {
-        const tbody = document.getElementById('workTableBody');
-        const rowCount = tbody.rows.length + 1;
-        const tr = document.createElement('tr');
-        
-        tr.innerHTML = `
-            <td class="text-center">${rowCount}</td>
-            <td><input type="text" class="form-control" placeholder="ระบุวันที่"></td>
-            <td><input type="number" class="form-control" value="0"></td>
-            <td><input type="number" class="form-control" value="0"></td>
-            <td>
-                <select class="form-select k-formula-select">
-                    ${kOptionsHTML}
-                </select>
-            </td>
-            <td class="text-center">
-                <button class="btn btn-info btn-sm text-white">⚙️ ตั้งค่าดัชนีงวด</button>
-            </td>
-            <td class="text-center">
-                <button class="btn btn-danger btn-sm" onclick="deleteRow(this)">🗑️ ลบ</button>
-            </td>
-        `;
-        tbody.appendChild(tr);
-    }
+    printWin.document.write(htmlContent);
+    printWin.document.close();
+  }
 
-    function deleteRow(btn) {
-        const row = btn.closest('tr');
-        row.remove();
-        updateRowNumbers();
-    }
-
-    function updateRowNumbers() {
-        const rows = document.querySelectorAll('#workTableBody tr');
-        rows.forEach((row, index) => {
-            row.cells[0].innerText = index + 1;
-        });
-    }
-
-    function calculateAll() {
-        alert('ระบบประมวลผลคำนวณเรียบร้อยแล้ว');
-    }
+  // เริ่มต้นทำงาน
+  renderPeriodTable();
 </script>
-
 </body>
 </html>
