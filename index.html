@@ -4,58 +4,268 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ระบบคำนวณค่า K และออกรายงานแนบท้ายสัญญา</title>
-  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; font-family: 'Sarabun', sans-serif; }
-    body { background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
-    .container { max-width: 1200px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
-    h1 { text-align: center; margin-bottom: 5px; font-size: 24px; color: #1a365d; }
-    .subtitle { text-align: center; color: #666; margin-bottom: 25px; font-size: 14px; }
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-light: #eef2ff;
+      --secondary: #06b6d4;
+      --success: #10b981;
+      --success-hover: #059669;
+      --danger: #ef4444;
+      --danger-hover: #dc2626;
+      --dark: #0f172a;
+      --gray-bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #334155;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --radius: 12px;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+    }
+
+    * { box-sizing: border-box; font-family: 'Prompt', 'Sarabun', sans-serif; }
     
-    .section { background: #fafafa; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px; margin-bottom: 20px; }
-    .section-title { font-weight: 700; font-size: 16px; margin-bottom: 12px; color: #2b6cb0; display: flex; align-items: center; gap: 8px; }
-    
-    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
-    .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
-    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
-    
+    body { 
+      background: linear-gradient(135deg, #f0f4ff 0%, #eef2f6 100%); 
+      margin: 0; 
+      padding: 24px 12px; 
+      color: var(--text-main); 
+      min-height: 100vh;
+    }
+
+    .container { 
+      max-width: 1240px; 
+      margin: 0 auto; 
+      background: var(--card-bg); 
+      padding: 32px; 
+      border-radius: 20px; 
+      box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+
+    /* Header Banner with Gradient & Developer Credit */
+    .app-header {
+      background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 50%, #06b6d4 100%);
+      color: white;
+      padding: 28px 24px;
+      border-radius: 16px;
+      margin-bottom: 30px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 10px 20px rgba(79, 70, 229, 0.25);
+      overflow: hidden;
+    }
+
+    .app-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .developer-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 6px 16px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    h1 { 
+      margin: 0 0 8px 0; 
+      font-size: 26px; 
+      font-weight: 700; 
+      color: #ffffff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .subtitle { 
+      color: rgba(255, 255, 255, 0.9); 
+      margin: 0; 
+      font-size: 14px; 
+      font-weight: 300;
+    }
+
+    /* Section Cards */
+    .section { 
+      background: #ffffff; 
+      border: 1px solid var(--border); 
+      border-radius: var(--radius); 
+      padding: 22px; 
+      margin-bottom: 24px; 
+      box-shadow: var(--shadow);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .section:hover {
+      box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.06);
+    }
+
+    .section-title { 
+      font-weight: 600; 
+      font-size: 16px; 
+      margin-bottom: 18px; 
+      color: var(--primary); 
+      display: flex; 
+      align-items: center; 
+      gap: 10px; 
+      border-bottom: 2px solid var(--primary-light);
+      padding-bottom: 10px;
+    }
+
+    /* Grid Layouts */
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+
+    /* Form Inputs */
     .form-group { display: flex; flex-direction: column; }
-    .form-group label { font-size: 13px; font-weight: 600; margin-bottom: 4px; color: #4a5568; }
-    .form-group input, .form-group select { padding: 8px 10px; border: 1px solid #cbd5e0; border-radius: 6px; font-size: 14px; }
+    .form-group label { 
+      font-size: 13px; 
+      font-weight: 500; 
+      margin-bottom: 6px; 
+      color: var(--text-main); 
+    }
     
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; background: #fff; }
-    th, td { border: 1px solid #cbd5e0; padding: 8px 10px; text-align: left; font-size: 13px; }
-    th { background: #ebf8ff; color: #2c5282; font-weight: 700; }
+    .form-group input, .form-group select { 
+      padding: 10px 14px; 
+      border: 1px solid var(--border); 
+      border-radius: 8px; 
+      font-size: 14px; 
+      background-color: var(--gray-bg);
+      color: var(--text-main);
+      transition: all 0.2s;
+      outline: none;
+    }
+
+    .form-group input:focus, .form-group select:focus {
+      background-color: #fff;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+
+    /* Tables */
+    table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 12px; overflow: hidden; border-radius: 8px; border: 1px solid var(--border); }
+    th, td { padding: 10px 12px; text-align: left; font-size: 13.5px; border-bottom: 1px solid var(--border); }
+    th { background: #f1f5f9; color: var(--dark); font-weight: 600; }
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background-color: #f8fafc; }
+    
+    td input, td select {
+      padding: 6px 8px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 13px;
+      width: 100%;
+    }
+
     .text-right { text-align: right; }
     .text-center { text-align: center; }
 
-    .btn { padding: 8px 14px; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; }
-    .btn-primary { background: #3182ce; color: white; }
-    .btn-primary:hover { background: #2b6cb0; }
-    .btn-success { background: #38a169; color: white; }
-    .btn-success:hover { background: #2f855a; }
-    .btn-danger { background: #e53e3e; color: white; }
-    .btn-danger:hover { background: #c53030; }
-    .btn-secondary { background: #718096; color: white; }
-    .btn-secondary:hover { background: #4a5568; }
-    .btn-sm { padding: 4px 8px; font-size: 12px; }
+    /* Buttons */
+    .btn { 
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 9px 16px; 
+      border: none; 
+      border-radius: 8px; 
+      font-size: 13.5px; 
+      font-weight: 500; 
+      cursor: pointer; 
+      transition: all 0.2s ease; 
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
 
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 100; }
-    .modal-content { background: white; padding: 20px; border-radius: 10px; width: 90%; max-width: 750px; max-height: 90vh; overflow-y: auto; }
+    .btn:active { transform: translateY(1px); }
 
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: var(--primary-hover); box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); }
+
+    .btn-success { background: var(--success); color: white; }
+    .btn-success:hover { background: var(--success-hover); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
+
+    .btn-danger { background: var(--danger); color: white; }
+    .btn-danger:hover { background: var(--danger-hover); }
+
+    .btn-secondary { background: #64748b; color: white; }
+    .btn-secondary:hover { background: #475569; }
+
+    .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 6px; }
+
+    /* Modal Styling */
+    .modal { 
+      display: none; 
+      position: fixed; 
+      top: 0; left: 0; 
+      width: 100%; height: 100%; 
+      background: rgba(15, 23, 42, 0.6); 
+      backdrop-filter: blur(4px);
+      justify-content: center; 
+      align-items: center; 
+      z-index: 100; 
+    }
+
+    .modal-content { 
+      background: white; 
+      padding: 28px; 
+      border-radius: 16px; 
+      width: 90%; 
+      max-width: 750px; 
+      max-height: 85vh; 
+      overflow-y: auto; 
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+    }
+
+    .modal-content h3 {
+      margin-top: 0;
+      color: var(--dark);
+      font-size: 18px;
+      border-bottom: 2px solid var(--primary-light);
+      padding-bottom: 10px;
+    }
+
+    /* Print Customization */
     @media print {
       .no-print { display: none !important; }
       body { background: white; padding: 0; }
-      .container { box-shadow: none; padding: 0; width: 100%; max-width: 100%; }
-      .section { border: none; padding: 0; margin-bottom: 10px; }
+      .container { box-shadow: none; padding: 0; width: 100%; max-width: 100%; border: none; }
+      .section { border: none; padding: 0; margin-bottom: 10px; box-shadow: none; }
+      .app-header { background: none; color: black; padding: 0; margin-bottom: 15px; box-shadow: none; text-align: left; }
+      .app-header h1 { color: black; text-shadow: none; }
+      .developer-badge { border: 1px solid #ccc; color: black; background: none; }
+      .subtitle { color: #555; }
     }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <h1>📊 ระบบคำนวณค่า K และออกรายงานแนบท้ายสัญญา</h1>
-  <p class="subtitle">รองรับสูตรค่า K มาตรฐาน มติ ครม. ครบทุกประเภท และบันทึกข้อมูลอัตโนมัติ</p>
+  <!-- Header Banner with Developer Credit -->
+  <div class="app-header">
+    <div class="developer-badge">
+      🛠️ พัฒนาโดย ช่างไผ่
+    </div>
+    <h1>📊 ระบบคำนวณค่า K และออกรายงานแนบท้ายสัญญา</h1>
+    <p class="subtitle">รองรับสูตรค่า K มาตรฐาน มติ ครม. ครบทุกประเภท และบันทึกข้อมูลอัตโนมัติ</p>
+  </div>
 
   <!-- 1. ข้อมูลสัญญา -->
   <div class="section no-print">
@@ -79,7 +289,7 @@
   <!-- 2. เงื่อนไข และ ดัชนีวันเปิดซองราคา -->
   <div class="section no-print">
     <div class="section-title">⚙️ 2. เงื่อนไขและดัชนีวันเปิดซองราคา (Base Indices: Io, Co, Mo, So, ฯลฯ)</div>
-    <div class="grid-2" style="margin-bottom: 12px;">
+    <div class="grid-2" style="margin-bottom: 16px;">
       <div class="form-group">
         <label>เงื่อนไขการปรับราคา</label>
         <select id="criteriaPercent" onchange="saveData()">
@@ -109,7 +319,7 @@
   <div class="section no-print">
     <div class="section-title" style="justify-content: space-between;">
       <span>📝 3. รายการงวดงานก่อสร้าง</span>
-      <div>
+      <div style="display: flex; gap: 8px;">
         <button class="btn btn-secondary btn-sm" onclick="resetDefaultData()">🔄 ล้างข้อมูล/เริ่มใหม่</button>
         <button class="btn btn-primary btn-sm" onclick="addPeriod()">➕ เพิ่มรายการงวดงาน</button>
       </div>
@@ -122,13 +332,13 @@
           <th width="14%" class="text-right">ค่างานทั้งหมด</th>
           <th width="14%" class="text-right">ไม่อยู่ในข่าย</th>
           <th width="24%">สูตรค่า K ที่ใช้</th>
-          <th width="12%" class="text-center">ดัชนีเดือนที่ส่งมอบ</th>
-          <th width="16%" class="text-center">จัดการ</th>
+          <th width="14%" class="text-center">ดัชนีเดือนที่ส่งมอบ</th>
+          <th width="14%" class="text-center">จัดการ</th>
         </tr>
       </thead>
       <tbody id="periodTableBody"></tbody>
     </table>
-    <div style="margin-top: 15px; text-align: right;">
+    <div style="margin-top: 18px; text-align: right;">
       <button class="btn btn-success" onclick="calculateAll()">🚀 คำนวณทั้งหมด และประมวลผลรายงาน</button>
     </div>
   </div>
@@ -189,7 +399,7 @@
           <td class="text-right" id="totalNonEligible">0.00</td>
           <td class="text-right" id="totalEligible">0.00</td>
           <td colspan="3"></td>
-          <td class="text-right" id="totalCompensation" style="color:#2b6cb0; font-size:15px;">0.00</td>
+          <td class="text-right" id="totalCompensation" style="color:var(--primary); font-size:15px;">0.00</td>
           <td class="no-print"></td>
         </tr>
       </tfoot>
@@ -202,7 +412,7 @@
   <div class="modal-content">
     <h3>⚙️ แก้ไขดัชนีเดือนที่ส่งมอบงาน งวดที่ <span id="modalPeriodId"></span> (<span id="modalFormulaName"></span>)</h3>
     <div class="grid-3" id="modalInputsContainer"></div>
-    <div style="margin-top: 20px; text-align: right;">
+    <div style="margin-top: 24px; text-align: right; display: flex; justify-content: flex-end; gap: 10px;">
       <button class="btn btn-danger" onclick="closeModal()">ยกเลิก</button>
       <button class="btn btn-success" onclick="saveModalIndices()">บันทึกดัชนี</button>
     </div>
