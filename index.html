@@ -110,11 +110,11 @@
     <table>
       <thead>
         <tr>
-          <th width="6%" class="text-center">งวดที่</th>
+          <th width="8%" class="text-center">งวดที่</th>
           <th width="12%">วันที่ส่งมอบ</th>
           <th width="14%" class="text-right">ค่างานทั้งหมด</th>
           <th width="14%" class="text-right">ไม่อยู่ในข่าย</th>
-          <th width="26%">สูตรค่า K ที่ใช้</th>
+          <th width="24%">สูตรค่า K ที่ใช้</th>
           <th width="12%" class="text-center">ดัชนีประจำงวด</th>
           <th width="16%" class="text-center">จัดการ</th>
         </tr>
@@ -408,7 +408,7 @@
 
       tbody.innerHTML += `
         <tr>
-          <td class="text-center">${p.id}</td>
+          <td><input type="number" class="text-center" value="${p.id}" onchange="periods[${index}].id = parseInt(this.value)||0"></td>
           <td><input type="text" value="${p.date}" onchange="periods[${index}].date = this.value"></td>
           <td><input type="number" class="text-right" value="${p.po}" onchange="periods[${index}].po = parseFloat(this.value)||0"></td>
           <td><input type="number" class="text-right" value="${p.nonEligiblePo}" onchange="periods[${index}].nonEligiblePo = parseFloat(this.value)||0"></td>
@@ -436,7 +436,7 @@
   }
 
   function addPeriod() {
-    const nextId = periods.length > 0 ? Math.max(...periods.map(p => p.id)) + 1 : 1;
+    const nextId = periods.length > 0 ? Math.max(...periods.map(p => p.id || 0)) + 1 : 1;
     periods.push({
       id: nextId,
       date: "",
