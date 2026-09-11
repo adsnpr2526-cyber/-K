@@ -8,9 +8,8 @@
   <style>
     * { box-sizing: border-box; font-family: 'Sarabun', sans-serif; }
     body { background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
-    .container { max-width: 1100px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
-    h1, h2, h3 { color: #1a365d; }
-    h1 { text-align: center; margin-bottom: 5px; font-size: 24px; }
+    .container { max-width: 1200px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+    h1 { text-align: center; margin-bottom: 5px; font-size: 24px; color: #1a365d; }
     .subtitle { text-align: center; color: #666; margin-bottom: 25px; font-size: 14px; }
     
     .section { background: #fafafa; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px; margin-bottom: 20px; }
@@ -18,6 +17,7 @@
     
     .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
     .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
     
     .form-group { display: flex; flex-direction: column; }
     .form-group label { font-size: 13px; font-weight: 600; margin-bottom: 4px; color: #4a5568; }
@@ -39,7 +39,7 @@
     .btn-sm { padding: 4px 8px; font-size: 12px; }
 
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 100; }
-    .modal-content { background: white; padding: 20px; border-radius: 10px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
+    .modal-content { background: white; padding: 20px; border-radius: 10px; width: 90%; max-width: 700px; max-height: 90vh; overflow-y: auto; }
 
     @media print {
       .no-print { display: none !important; }
@@ -53,7 +53,7 @@
 
 <div class="container">
   <h1>📊 ระบบคำนวณค่า K และออกรายงานแนบท้ายสัญญา</h1>
-  <p class="subtitle">โปรแกรมคำนวณเงินชดเชยค่างานก่อสร้างตามมติ ครม. (รองรับการพิมพ์คำนวณแยกรายงวด)</p>
+  <p class="subtitle">รองรับสูตรค่า K มาตรฐาน มติ ครม. ทุกหมวดงาน และพิมพ์รายงานแยกรายงวด</p>
 
   <!-- 1. ข้อมูลสัญญา -->
   <div class="section no-print">
@@ -74,7 +74,7 @@
 
   <!-- 2. เงื่อนไข และ ดัชนีฐาน -->
   <div class="section no-print">
-    <div class="section-title">⚙️ 2. เงื่อนไขและดัชนีราคาฐาน (Base Indices: Io, Co, Mo, So)</div>
+    <div class="section-title">⚙️ 2. เงื่อนไขและดัชนีราคาฐาน (Base Indices: Io, Co, Mo, So, ฯลฯ)</div>
     <div class="grid-2" style="margin-bottom: 12px;">
       <div class="form-group">
         <label>เงื่อนไขการปรับราคา</label>
@@ -84,11 +84,19 @@
         </select>
       </div>
     </div>
-    <div class="grid-4">
-      <div class="form-group"><label>ดัชนีฐาน Io (ทั่วไป)</label><input type="number" step="0.1" id="baseIo" value="212.8"></div>
-      <div class="form-group"><label>ดัชนีฐาน Co (ซีเมนต์)</label><input type="number" step="0.1" id="baseCo" value="100.0"></div>
-      <div class="form-group"><label>ดัชนีฐาน Mo (วัสดุ)</label><input type="number" step="0.1" id="baseMo" value="244.8"></div>
-      <div class="form-group"><label>ดัชนีฐาน So (เหล็ก)</label><input type="number" step="0.1" id="baseSo" value="100.0"></div>
+    <div class="grid-3">
+      <div class="form-group"><label>Io (ทั่วไป)</label><input type="number" step="0.1" id="base_Io" value="212.8"></div>
+      <div class="form-group"><label>Co (ซีเมนต์)</label><input type="number" step="0.1" id="base_Co" value="100.0"></div>
+      <div class="form-group"><label>Mo (วัสดุ)</label><input type="number" step="0.1" id="base_Mo" value="244.8"></div>
+      <div class="form-group"><label>So (เหล็ก)</label><input type="number" step="0.1" id="base_So" value="100.0"></div>
+      <div class="form-group"><label>Eo (เครื่องจักร)</label><input type="number" step="0.1" id="base_Eo" value="100.0"></div>
+      <div class="form-group"><label>Fo (น้ำมันดีเซล)</label><input type="number" step="0.1" id="base_Fo" value="100.0"></div>
+      <div class="form-group"><label>Ao (แอสฟัลต์)</label><input type="number" step="0.1" id="base_Ao" value="100.0"></div>
+      <div class="form-group"><label>Gt (ยางตระกูล G)</label><input type="number" step="0.1" id="base_Go" value="100.0"></div>
+      <div class="form-group"><label>PPo (ท่อ PVC/PE)</label><input type="number" step="0.1" id="base_PPo" value="100.0"></div>
+      <div class="form-group"><label>PCo (ท่อคอนกรีต)</label><input type="number" step="0.1" id="base_PCo" value="100.0"></div>
+      <div class="form-group"><label>PSo (ท่อเหล็ก)</label><input type="number" step="0.1" id="base_PSo" value="100.0"></div>
+      <div class="form-group"><label>Wo (สายไฟฟ้า)</label><input type="number" step="0.1" id="base_Wo" value="100.0"></div>
     </div>
   </div>
 
@@ -101,18 +109,16 @@
     <table>
       <thead>
         <tr>
-          <th width="8%" class="text-center">งวดที่</th>
-          <th width="15%">วันที่ส่งมอบ</th>
-          <th width="15%" class="text-right">ค่างานทั้งหมด (บาท)</th>
-          <th width="15%" class="text-right">ไม่อยู่ในข่าย (บาท)</th>
-          <th width="15%">สูตรค่า K</th>
-          <th width="15%">ดัชนีประจำงวด (It,Ct,Mt,St)</th>
-          <th width="17%" class="text-center">จัดการ</th>
+          <th width="6%" class="text-center">งวดที่</th>
+          <th width="12%">วันที่ส่งมอบ</th>
+          <th width="14%" class="text-right">ค่างานทั้งหมด</th>
+          <th width="14%" class="text-right">ไม่อยู่ในข่าย</th>
+          <th width="24%">สูตรค่า K ที่ใช้</th>
+          <th width="14%" class="text-center">ดัชนีประจำงวด</th>
+          <th width="16%" class="text-center">จัดการ</th>
         </tr>
       </thead>
-      <tbody id="periodTableBody">
-        <!-- จะถูกเติมด้วย JS -->
-      </tbody>
+      <tbody id="periodTableBody"></tbody>
     </table>
     <div style="margin-top: 15px; text-align: right;">
       <button class="btn btn-success" onclick="calculateAll()">🚀 คำนวณทั้งหมด และประมวลผลรายงาน</button>
@@ -163,8 +169,7 @@
           <th class="text-right">ได้รับพิจารณา</th>
         </tr>
       </thead>
-      <tbody id="summaryTableBody">
-      </tbody>
+      <tbody id="summaryTableBody"></tbody>
       <tfoot>
         <tr style="font-weight:bold; background:#edf2f7;">
           <td colspan="2" class="text-center">รวมทั้งสิ้น</td>
@@ -183,14 +188,9 @@
 <!-- Modal แก้ไขดัชนีประจำงวด -->
 <div class="modal" id="indexModal">
   <div class="modal-content">
-    <h3>⚙️ แก้ไขดัชนีราคาประจำงวด <span id="modalPeriodId"></span></h3>
-    <div class="grid-2">
-      <div class="form-group"><label>It (ดัชนีทั่วไปงวดนี้)</label><input type="number" step="0.1" id="mIt"></div>
-      <div class="form-group"><label>Ct (ซีเมนต์งวดนี้)</label><input type="number" step="0.1" id="mCt"></div>
-      <div class="form-group"><label>Mt (วัสดุงวดนี้)</label><input type="number" step="0.1" id="mMt"></div>
-      <div class="form-group"><label>St (เหล็กงวดนี้)</label><input type="number" step="0.1" id="mSt"></div>
-    </div>
-    <div style="margin-top: 15px; text-align: right;">
+    <h3>⚙️ แก้ไขดัชนีราคาประจำงวด <span id="modalPeriodId"></span> (<span id="modalFormulaName"></span>)</h3>
+    <div class="grid-3" id="modalInputsContainer"></div>
+    <div style="margin-top: 20px; text-align: right;">
       <button class="btn btn-danger" onclick="closeModal()">ยกเลิก</button>
       <button class="btn btn-success" onclick="saveModalIndices()">บันทึกดัชนี</button>
     </div>
@@ -198,27 +198,84 @@
 </div>
 
 <script>
-  // สูตรค่า K ตัวอย่าง (สูตรมาตรฐาน K1)
-  const FORMULA_K1 = {
-    name: "K1 - งานอาคาร",
-    calc: (rI, rC, rM, rS) => 0.25 + (0.15 * rI) + (0.10 * rC) + (0.40 * rM) + (0.10 * rS),
-    coeffs: { const: 0.25, I: 0.15, C: 0.10, M: 0.40, S: 0.10 }
+  // 1. คลังสูตร K มาตรฐานตามหลักเกณฑ์มติ ครม.
+  const FORMULAS = {
+    "K1_1": {
+      name: "1.1 งานอาคาร",
+      const: 0.25,
+      terms: [ { key: "I", coeff: 0.15, label: "ดัชนีผู้บริโภค (I)" }, { key: "C", coeff: 0.10, label: "ดัชนีซีเมนต์ (C)" }, { key: "M", coeff: 0.40, label: "ดัชนีวัสดุก่อสร้าง (M)" }, { key: "S", coeff: 0.10, label: "ดัชนีเหล็ก (S)" } ]
+    },
+    "K2_1": {
+      name: "2.1 งานดิน",
+      const: 0.30,
+      terms: [ { key: "I", coeff: 0.10, label: "ดัชนีผู้บริโภค (I)" }, { key: "E", coeff: 0.20, label: "ดัชนีเครื่องจักร (E)" }, { key: "F", coeff: 0.40, label: "ดัชนีน้ำมันดีเซล (F)" } ]
+    },
+    "K2_2": {
+      name: "2.2 งานหินรองพื้น/หินพื้นทาง",
+      const: 0.25,
+      terms: [ { key: "I", coeff: 0.15, label: "ดัชนีผู้บริโภค (I)" }, { key: "E", coeff: 0.20, label: "ดัชนีเครื่องจักร (E)" }, { key: "F", coeff: 0.40, label: "ดัชนีน้ำมันดีเซล (F)" } ]
+    },
+    "K2_3": {
+      name: "2.3 งานผิวทางแอสฟัลต์คอนกรีต",
+      const: 0.30,
+      terms: [ { key: "I", coeff: 0.10, label: "ดัชนีผู้บริโภค (I)" }, { key: "A", coeff: 0.40, label: "ดัชนีแอสฟัลต์ (A)" }, { key: "E", coeff: 0.10, label: "ดัชนีเครื่องจักร (E)" }, { key: "F", coeff: 0.10, label: "ดัชนีน้ำมันดีเซล (F)" } ]
+    },
+    "K2_4": {
+      name: "2.4 งานผิวทางคอนกรีตเสริมเหล็ก",
+      const: 0.30,
+      terms: [ { key: "I", coeff: 0.10, label: "ดัชนีผู้บริโภค (I)" }, { key: "C", coeff: 0.35, label: "ดัชนีซีเมนต์ (C)" }, { key: "M", coeff: 0.10, label: "ดัชนีวัสดุก่อสร้าง (M)" }, { key: "S", coeff: 0.15, label: "ดัชนีเหล็ก (S)" } ]
+    },
+    "K2_5": {
+      name: "2.5 งานโครงสร้างสะพาน/ท่อเหลี่ยม",
+      const: 0.30,
+      terms: [ { key: "I", coeff: 0.10, label: "ดัชนีผู้บริโภค (I)" }, { key: "C", coeff: 0.15, label: "ดัชนีซีเมนต์ (C)" }, { key: "M", coeff: 0.20, label: "ดัชนีวัสดุก่อสร้าง (M)" }, { key: "S", coeff: 0.25, label: "ดัชนีเหล็ก (S)" } ]
+    },
+    "K3_1": {
+      name: "3.1 งานอาคารชลประทาน (ไม่รวมเขื่อน)",
+      const: 0.45,
+      terms: [ { key: "I", coeff: 0.20, label: "ดัชนีผู้บริโภค (I)" }, { key: "C", coeff: 0.10, label: "ดัชนีซีเมนต์ (C)" }, { key: "M", coeff: 0.10, label: "ดัชนีวัสดุก่อสร้าง (M)" }, { key: "S", coeff: 0.15, label: "ดัชนีเหล็ก (S)" } ]
+    },
+    "K3_2": {
+      name: "3.2 งานคลองส่งน้ำคอนกรีต/ดายหญ้า",
+      const: 0.35,
+      terms: [ { key: "I", coeff: 0.20, label: "ดัชนีผู้บริโภค (I)" }, { key: "C", coeff: 0.25, label: "ดัชนีซีเมนต์ (C)" }, { key: "M", coeff: 0.10, label: "ดัชนีวัสดุก่อสร้าง (M)" }, { key: "S", coeff: 0.10, label: "ดัชนีเหล็ก (S)" } ]
+    },
+    "K4_1": {
+      name: "4.1 งานวางท่อ PVC / PE",
+      const: 0.40,
+      terms: [ { key: "I", coeff: 0.10, label: "ดัชนีผู้บริโภค (I)" }, { key: "PP", coeff: 0.50, label: "ดัชนีท่อ PVC/PE (PP)" } ]
+    },
+    "K4_2": {
+      name: "4.2 งานวางท่อเหล็กส่งน้ำ",
+      const: 0.35,
+      terms: [ { key: "I", coeff: 0.10, label: "ดัชนีผู้บริโภค (I)" }, { key: "PS", coeff: 0.55, label: "ดัชนีท่อเหล็ก (PS)" } ]
+    },
+    "K5_1": {
+      name: "5.1 งานระบบสายไฟฟ้า underground/overhead",
+      const: 0.40,
+      terms: [ { key: "I", coeff: 0.10, label: "ดัชนีผู้บริโภค (I)" }, { key: "W", coeff: 0.50, label: "ดัชนีสายไฟฟ้า (W)" } ]
+    }
   };
 
-  // ข้อมูลรายการงวดงานเริ่มต้น
+  // 2. ข้อมูลรายการงวดงานเริ่มต้น
   let periods = [
-    { id: 1, date: "30 มิ.ย. 2559", po: 1400000, nonEligiblePo: 250000, formula: "K1", indices: { It: 221.0, Ct: 105.0, Mt: 260.3, St: 105.0 } },
-    { id: 2, date: "29 ก.ค. 2559", po: 5000000, nonEligiblePo: 20000, formula: "K1", indices: { It: 221.0, Ct: 105.0, Mt: 260.3, St: 105.0 } }
+    { id: 1, date: "30 มิ.ย. 2559", po: 1400000, nonEligiblePo: 250000, formulaKey: "K1_1", indices: { I: 221.0, C: 105.0, M: 260.3, S: 105.0 } },
+    { id: 2, date: "29 ก.ค. 2559", po: 5000000, nonEligiblePo: 20000, formulaKey: "K2_1", indices: { I: 221.0, E: 108.0, F: 112.5 } }
   ];
 
   let currentEditingPeriodId = null;
 
-  // โหลดข้อมูลตารางงวดงานแรกเริ่ม
+  // Render ตารางรายการงวดงาน
   function renderPeriodTable() {
     const tbody = document.getElementById('periodTableBody');
     tbody.innerHTML = '';
 
     periods.forEach((p, index) => {
+      let formulaOptions = '';
+      for (let key in FORMULAS) {
+        formulaOptions += `<option value="${key}" ${p.formulaKey === key ? 'selected' : ''}>${FORMULAS[key].name}</option>`;
+      }
+
       tbody.innerHTML += `
         <tr>
           <td class="text-center">${p.id}</td>
@@ -226,12 +283,12 @@
           <td><input type="number" class="text-right" value="${p.po}" onchange="periods[${index}].po = parseFloat(this.value)||0"></td>
           <td><input type="number" class="text-right" value="${p.nonEligiblePo}" onchange="periods[${index}].nonEligiblePo = parseFloat(this.value)||0"></td>
           <td>
-            <select onchange="periods[${index}].formula = this.value">
-              <option value="K1" ${p.formula === 'K1' ? 'selected' : ''}>K1 - งานอาคาร</option>
+            <select style="width: 100%;" onchange="changePeriodFormula(${p.id}, this.value)">
+              ${formulaOptions}
             </select>
           </td>
           <td class="text-center">
-            <button class="btn btn-primary btn-sm" onclick="openIndexModal(${p.id})">⚙️ ตั้งค่าดัชนีงวด</button>
+            <button class="btn btn-primary btn-sm" onclick="openIndexModal(${p.id})">⚙️ ดัชนีงวด</button>
           </td>
           <td class="text-center">
             <button class="btn btn-danger btn-sm" onclick="deletePeriod(${p.id})">🗑️ ลบ</button>
@@ -241,6 +298,13 @@
     });
   }
 
+  function changePeriodFormula(id, newFormulaKey) {
+    const p = periods.find(item => item.id === id);
+    if (p) {
+      p.formulaKey = newFormulaKey;
+    }
+  }
+
   function addPeriod() {
     const nextId = periods.length > 0 ? Math.max(...periods.map(p => p.id)) + 1 : 1;
     periods.push({
@@ -248,8 +312,8 @@
       date: "",
       po: 0,
       nonEligiblePo: 0,
-      formula: "K1",
-      indices: { It: 212.8, Ct: 100.0, Mt: 244.8, St: 100.0 }
+      formulaKey: "K1_1",
+      indices: { I: 212.8, C: 100.0, M: 244.8, S: 100.0 }
     });
     renderPeriodTable();
   }
@@ -259,14 +323,28 @@
     renderPeriodTable();
   }
 
+  // เปิด/ปิด และบันทึก Modal ดัชนี
   function openIndexModal(id) {
     currentEditingPeriodId = id;
     const p = periods.find(item => item.id === id);
+    const formula = FORMULAS[p.formulaKey];
+
     document.getElementById('modalPeriodId').innerText = id;
-    document.getElementById('mIt').value = p.indices.It;
-    document.getElementById('mCt').value = p.indices.Ct;
-    document.getElementById('mMt').value = p.indices.Mt;
-    document.getElementById('mSt').value = p.indices.St;
+    document.getElementById('modalFormulaName').innerText = formula.name;
+
+    const container = document.getElementById('modalInputsContainer');
+    container.innerHTML = '';
+
+    formula.terms.forEach(term => {
+      const val = (p.indices && p.indices[term.key] !== undefined) ? p.indices[term.key] : 100.0;
+      container.innerHTML += `
+        <div class="form-group">
+          <label>${term.label} (${term.key}t)</label>
+          <input type="number" step="0.1" id="m_index_${term.key}" value="${val}">
+        </div>
+      `;
+    });
+
     document.getElementById('indexModal').style.display = 'flex';
   }
 
@@ -276,27 +354,25 @@
 
   function saveModalIndices() {
     const p = periods.find(item => item.id === currentEditingPeriodId);
-    if(p) {
-      p.indices.It = parseFloat(document.getElementById('mIt').value) || 0;
-      p.indices.Ct = parseFloat(document.getElementById('mCt').value) || 0;
-      p.indices.Mt = parseFloat(document.getElementById('mMt').value) || 0;
-      p.indices.St = parseFloat(document.getElementById('mSt').value) || 0;
+    const formula = FORMULAS[p.formulaKey];
+    if (p && formula) {
+      p.indices = {};
+      formula.terms.forEach(term => {
+        const inputElem = document.getElementById(`m_index_${term.key}`);
+        if (inputElem) {
+          p.indices[term.key] = parseFloat(inputElem.value) || 0;
+        }
+      });
     }
     closeModal();
     alert('บันทึกดัชนีประจำงวดสำเร็จ!');
   }
 
-  // ฟังก์ชันคำนวณหลัก
+  // คำนวณหลักทั้งหมด
   function calculateAll() {
-    const baseIndices = {
-      Io: parseFloat(document.getElementById('baseIo').value) || 1,
-      Co: parseFloat(document.getElementById('baseCo').value) || 1,
-      Mo: parseFloat(document.getElementById('baseMo').value) || 1,
-      So: parseFloat(document.getElementById('baseSo').value) || 1,
-    };
     const criteriaPercent = parseFloat(document.getElementById('criteriaPercent').value);
-    const upperLimit = 1 + (criteriaPercent / 100); // 1.040 หรือ 1.020
-    const lowerLimit = 1 - (criteriaPercent / 100); // 0.960 หรือ 0.980
+    const upperLimit = 1 + (criteriaPercent / 100);
+    const lowerLimit = 1 - (criteriaPercent / 100);
 
     const summaryTbody = document.getElementById('summaryTableBody');
     summaryTbody.innerHTML = '';
@@ -305,18 +381,35 @@
 
     periods.forEach(p => {
       const eligiblePo = p.po - p.nonEligiblePo;
+      const formula = FORMULAS[p.formulaKey];
 
-      // 1. คำนวณอัตราส่วนดัชนี (ปัดเศษทศนิยม 3 ตำแหน่ง)
-      const rI = Number((p.indices.It / baseIndices.Io).toFixed(3));
-      const rC = Number((p.indices.Ct / baseIndices.Co).toFixed(3));
-      const rM = Number((p.indices.Mt / baseIndices.Mo).toFixed(3));
-      const rS = Number((p.indices.St / baseIndices.So).toFixed(3));
+      // คำนวณแต่ละพจน์
+      let termResults = [];
+      let calculatedK = formula.const;
 
-      // 2. คำนวณค่า K Raw & Rounded
-      const rawK = FORMULA_K1.calc(rI, rC, rM, rS);
-      const kValue = Number(rawK.toFixed(3));
+      formula.terms.forEach(term => {
+        const baseVal = parseFloat(document.getElementById(`base_${term.key}o`)?.value) || 100.0;
+        const periodVal = p.indices[term.key] !== undefined ? p.indices[term.key] : baseVal;
+        
+        const ratio = Number((periodVal / baseVal).toFixed(3)); // ปัดเศษ 3 ตำแหน่ง
+        const product = Number((term.coeff * ratio).toFixed(3));
+        
+        termResults.push({
+          key: term.key,
+          label: term.label,
+          coeff: term.coeff,
+          baseVal,
+          periodVal,
+          ratio,
+          product
+        });
 
-      // 3. คำนวณส่วนต่าง K ชดเชย
+        calculatedK += term.coeff * ratio;
+      });
+
+      const kValue = Number(calculatedK.toFixed(3));
+
+      // คำนวณส่วนต่าง K
       let kDiff = 0;
       if (kValue > upperLimit) {
         kDiff = Number((kValue - upperLimit).toFixed(3));
@@ -328,14 +421,23 @@
 
       const compensation = eligiblePo * kDiff;
 
-      // รวมยอด
+      // รวมสรุป
       sumPo += p.po;
       sumNonEligible += p.nonEligiblePo;
       sumEligible += eligiblePo;
       sumComp += compensation;
 
-      // บันทึกค่าคำนวณกลับเข้าก้อนข้อมูลไว้พิมพ์
-      p.calcData = { eligiblePo, rI, rC, rM, rS, kValue, kDiff, compensation, baseIndices, criteriaPercent };
+      // เก็บไว้ใช้ออกรายงาน
+      p.calcData = {
+        eligiblePo,
+        kValue,
+        kDiff,
+        compensation,
+        termResults,
+        criteriaPercent,
+        formulaName: formula.name,
+        formulaConst: formula.const
+      };
 
       summaryTbody.innerHTML += `
         <tr>
@@ -344,7 +446,7 @@
           <td class="text-right">${p.po.toLocaleString()}</td>
           <td class="text-right">${p.nonEligiblePo.toLocaleString()}</td>
           <td class="text-right">${eligiblePo.toLocaleString()}</td>
-          <td class="text-center">${p.formula}</td>
+          <td class="text-center">${p.formulaKey}</td>
           <td class="text-center"><b>${kValue.toFixed(3)}</b></td>
           <td class="text-center">${kDiff.toFixed(3)}</td>
           <td class="text-right"><b>${compensation.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</b></td>
@@ -355,7 +457,7 @@
       `;
     });
 
-    // อัปเดตข้อมูลส่วนหัวรายงาน
+    // อัปเดตส่วนหัว
     document.getElementById('rMinistry').innerText = document.getElementById('ministry').value;
     document.getElementById('rDepartment').innerText = document.getElementById('department').value;
     document.getElementById('rProjectName').innerText = document.getElementById('projectName').value;
@@ -365,7 +467,7 @@
     document.getElementById('rBidDate').innerText = document.getElementById('bidDate').value;
     document.getElementById('rPeriod').innerText = `${document.getElementById('startDate').value} ถึง ${document.getElementById('endDate').value}`;
 
-    // อัปเดตยอดรวม
+    // ยอดรวม
     document.getElementById('totalPo').innerText = sumPo.toLocaleString();
     document.getElementById('totalNonEligible').innerText = sumNonEligible.toLocaleString();
     document.getElementById('totalEligible').innerText = sumEligible.toLocaleString();
@@ -374,7 +476,7 @@
     document.getElementById('reportSection').style.display = 'block';
   }
 
-  // ฟังก์ชันเปิดพิมพ์ใบคำนวณแบบรายงวด
+  // พิมพ์รายงานคำนวณแยกงวด
   function printSinglePeriod(id) {
     const p = periods.find(item => item.id === id);
     if (!p || !p.calcData) {
@@ -384,6 +486,20 @@
 
     const c = p.calcData;
     const printWin = window.open('', '_blank');
+
+    let rowsHtml = '';
+    c.termResults.forEach(t => {
+      rowsHtml += `
+        <tr>
+          <td>${t.label}</td>
+          <td class="text-center">${t.baseVal}</td>
+          <td class="text-center">${t.periodVal}</td>
+          <td class="text-center">${t.ratio.toFixed(3)}</td>
+          <td class="text-center">${t.coeff.toFixed(2)}</td>
+          <td class="text-center">${t.product.toFixed(3)}</td>
+        </tr>
+      `;
+    });
 
     const htmlContent = `
       <!DOCTYPE html>
@@ -411,7 +527,7 @@
         </div>
 
         <p><b>ประจำงวดงานที่:</b> ${p.id} &nbsp;&nbsp;&nbsp;&nbsp; <b>วันที่ส่งมอบงาน:</b> ${p.date}</p>
-        <p><b>สูตรคำนวณค่า K:</b> K = 0.25 + 0.15(It/Io) + 0.10(Ct/Co) + 0.40(Mt/Mo) + 0.10(St/So)</p>
+        <p><b>สูตรที่ใช้คำนวณ:</b> ${c.formulaName}</p>
 
         <table>
           <thead>
@@ -425,44 +541,13 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>ดัชนีผู้บริโภค / งานทั่วไป (I)</td>
-              <td class="text-center">${c.baseIndices.Io}</td>
-              <td class="text-center">${p.indices.It}</td>
-              <td class="text-center">${c.rI.toFixed(3)}</td>
-              <td class="text-center">0.15</td>
-              <td class="text-center">${(0.15 * c.rI).toFixed(3)}</td>
-            </tr>
-            <tr>
-              <td>ดัชนีซีเมนต์ (C)</td>
-              <td class="text-center">${c.baseIndices.Co}</td>
-              <td class="text-center">${p.indices.Ct}</td>
-              <td class="text-center">${c.rC.toFixed(3)}</td>
-              <td class="text-center">0.10</td>
-              <td class="text-center">${(0.10 * c.rC).toFixed(3)}</td>
-            </tr>
-            <tr>
-              <td>ดัชนีวัสดุก่อสร้าง (M)</td>
-              <td class="text-center">${c.baseIndices.Mo}</td>
-              <td class="text-center">${p.indices.Mt}</td>
-              <td class="text-center">${c.rM.toFixed(3)}</td>
-              <td class="text-center">0.40</td>
-              <td class="text-center">${(0.40 * c.rM).toFixed(3)}</td>
-            </tr>
-            <tr>
-              <td>ดัชนีเหล็ก (S)</td>
-              <td class="text-center">${c.baseIndices.So}</td>
-              <td class="text-center">${p.indices.St}</td>
-              <td class="text-center">${c.rS.toFixed(3)}</td>
-              <td class="text-center">0.10</td>
-              <td class="text-center">${(0.10 * c.rS).toFixed(3)}</td>
-            </tr>
+            ${rowsHtml}
             <tr>
               <td colspan="5" class="text-right"><b>ค่าคงที่ (Constant)</b></td>
-              <td class="text-center"><b>0.250</b></td>
+              <td class="text-center"><b>${c.formulaConst.toFixed(3)}</b></td>
             </tr>
             <tr class="highlight">
-              <td colspan="5" class="text-right"><b>ค่า K1 ที่คำนวณได้</b></td>
+              <td colspan="5" class="text-right"><b>ค่า K ที่คำนวณได้</b></td>
               <td class="text-center"><b>${c.kValue.toFixed(3)}</b></td>
             </tr>
           </tbody>
@@ -484,7 +569,7 @@
     printWin.document.close();
   }
 
-  // เริ่มต้นทำงาน
+  // เริ่มต้น Render ตารางงวด
   renderPeriodTable();
 </script>
 </body>
