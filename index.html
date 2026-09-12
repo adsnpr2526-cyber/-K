@@ -670,6 +670,8 @@
       if (p.formulaKey === 'K4_7') {
         const baseVal = parseFloat(document.getElementById('base_Co')?.value) || 100.0;
         const periodVal = p.indices['C'] !== undefined ? p.indices['C'] : baseVal;
+        
+        // ตัดทศนิยมตำแหน่งที่ 4 ทิ้งทันที (ไม่ปัดเศษ)
         const ratio = truncate3(periodVal / baseVal);
         const kValue = ratio;
         
@@ -723,8 +725,10 @@
         const baseVal = parseFloat(document.getElementById(baseInputKey)?.value) || 100.0;
         const periodVal = p.indices[term.key] !== undefined ? p.indices[term.key] : baseVal;
         
-        // ตัดทศนิยมตำแหน่งที่ 4 ทิ้งทันทีสำหรับทุกขั้นตอน
+        // 1. คำนวณอัตราส่วน และตัดทศนิยมตำแหน่งที่ 4 ทิ้งทันที (ไม่ปัดเศษ)
         const ratio = truncate3(periodVal / baseVal);
+        
+        // 2. คำนวณผลคูณสัมประสิทธิ์ และตัดทศนิยมตำแหน่งที่ 4 ทิ้ง
         const product = truncate3(term.coeff * ratio);
         
         termResults.push({
