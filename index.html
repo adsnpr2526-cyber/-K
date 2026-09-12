@@ -909,23 +909,27 @@
       <head>
         <title>รายงานการคำนวณค่า K - งวดที่ ${p.id}</title>
         <style>
-          body { font-family: 'Sarabun', sans-serif; padding: 25px; line-height: 1.6; font-size: 14px; color: #111; }
+          body { font-family: 'Sarabun', sans-serif; padding: 25px; line-height: 1.6; font-size: 16pt; color: #111; }
           .text-center { text-align: center; }
           .text-right { text-align: right; }
-          .header-title { font-size: 18px; font-weight: bold; margin-bottom: 5px; }
-          .header-sub { font-size: 14px; margin-bottom: 15px; color: #444; }
-          table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+          .header-title { font-size: 20pt; font-weight: bold; margin-bottom: 5px; }
+          .header-sub { font-size: 16pt; margin-bottom: 15px; color: #444; }
+          table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 16pt; }
           th, td { border: 1px solid #333; padding: 6px 8px; }
           th { background-color: #f2f2f2; }
           .highlight { font-weight: bold; background-color: #e2e8f0; }
-          .calc-box { background: #f8fafc; border: 1px solid #cbd5e0; padding: 12px 15px; border-radius: 6px; margin: 15px 0; font-size: 13.5px; }
+          .calc-box { background: #f8fafc; border: 1px solid #cbd5e0; padding: 12px 15px; border-radius: 6px; margin: 15px 0; font-size: 16pt; }
           .calc-step { margin-bottom: 6px; }
-          .section-heading { font-weight: bold; font-size: 15px; margin-top: 20px; margin-bottom: 5px; color: #1a365d; }
-          @media print { .no-print { display: none; } }
+          .section-heading { font-weight: bold; font-size: 17pt; margin-top: 20px; margin-bottom: 5px; color: #1a365d; }
+          @media print { 
+            .no-print { display: none; }
+            body { font-size: 16pt; }
+            table { font-size: 16pt; }
+          }
         </style>
       </head>
       <body>
-        <button class="no-print" onclick="window.print()" style="padding: 8px 15px; margin-bottom: 15px; cursor:pointer;">🖨️ พิมพ์เอกสารนี้</button>
+        <button class="no-print" onclick="window.print()" style="padding: 8px 15px; margin-bottom: 15px; cursor:pointer; font-size: 14pt;">พิมพ์เอกสารนี้</button>
 
         <div class="text-center">
           <div class="header-title">แบบแสดงรายการคำนวณค่า K และเงินชดเชยค่างานก่อสร้าง</div>
@@ -938,11 +942,11 @@
         </table>
 
         <div class="calc-box">
-          <div style="font-weight: bold; text-decoration: underline; margin-bottom: 6px;">📐 สูตรและการแทนค่าคำนวณค่า K:</div>
+          <div style="font-weight: bold; text-decoration: underline; margin-bottom: 6px;">สูตรและการแทนค่าคำนวณค่า K:</div>
           <div class="calc-step"><b>1. สูตรคำนวณมาตรฐาน:</b> ${formulaSymbolic}</div>
           <div class="calc-step"><b>2. แทนค่าตัวเลขอัตราส่วนดัชนี:</b> ${formulaSubstituted}</div>
           <div class="calc-step"><b>3. ผลคูณแต่ละพจน์ (คูณจาก Ratio 3 ตำแหน่ง):</b> ${formulaProducts}</div>
-          <div class="calc-step" style="font-size:15px; margin-top:8px;"><b>4. ค่า K ที่คำนวณได้ = <span style="color:#2b6cb0;">${format3(c.kValue)}</span></b></div>
+          <div class="calc-step" style="font-size:17pt; margin-top:8px;"><b>4. ค่า K ที่คำนวณได้ = <span style="color:#2b6cb0;">${format3(c.kValue)}</span></b></div>
         </div>
 
         <table>
@@ -970,7 +974,7 @@
           </tbody>
         </table>
 
-        <div class="section-heading">📌 รายละเอียดและคำอธิบายดัชนีราคาที่ใช้คำนวณ</div>
+        <div class="section-heading">รายละเอียดและคำอธิบายดัชนีราคาที่ใช้คำนวณ</div>
         <table>
           <thead>
             <tr>
@@ -985,12 +989,12 @@
         </table>
 
         <div class="calc-box">
-          <div style="font-weight: bold; text-decoration: underline; margin-bottom: 6px;">💡 วิธีคำนวณเงินชดเชยค่างาน:</div>
+          <div style="font-weight: bold; text-decoration: underline; margin-bottom: 6px;">วิธีคำนวณเงินชดเชยค่างาน:</div>
           <div class="calc-step"><b>1. พิจารณาเกณฑ์การปรับราคา (&plusmn;${c.criteriaPercent}%):</b> ${kDiffCalcText}</div>
           <div class="calc-step"><b>2. ค่างานที่นำมาคำนวณ (P_o):</b> ${p.po.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} - ${p.nonEligiblePo.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} = <b>${c.eligiblePo.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</b> บาท</div>
           <div class="calc-step"><b>3. สูตรคำนวณเงินชดเชย:</b> เงินชดเชย = P_o &times; ส่วนต่าง K</div>
           <div class="calc-step" style="padding-left: 20px;">= ${c.eligiblePo.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} &times; ${format3(c.kDiff)}</div>
-          <div class="calc-step" style="font-size: 15px; margin-top: 6px;"><b>= <span style="color:#2b6cb0; text-decoration: underline;">${c.compensation.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span> บาท</b></div>
+          <div class="calc-step" style="font-size: 17pt; margin-top: 6px;"><b>= <span style="color:#2b6cb0; text-decoration: underline;">${c.compensation.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span> บาท</b></div>
         </div>
 
       </body>
