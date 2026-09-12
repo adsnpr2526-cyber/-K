@@ -400,24 +400,24 @@
           <th rowspan="2" class="text-center">สูตร K</th>
           <th rowspan="2" class="text-center">ค่า K</th>
           <th rowspan="2" class="text-center">ส่วนต่าง K</th>
-          <th rowspan="2" class="text-right">เงินชดเชย (บาท)</th>
+          <th rowspan="2" class="text-center">เงินชดเชย (บาท)</th>
           <th rowspan="2" class="text-center no-print">พิมพ์ใบรายงวด</th>
         </tr>
         <tr>
-          <th class="text-right">ทั้งหมด</th>
-          <th class="text-right">ไม่อยู่ในข่าย</th>
-          <th class="text-right">ได้รับพิจารณา</th>
+          <th class="text-center">ทั้งหมด</th>
+          <th class="text-center">ไม่อยู่ในข่าย</th>
+          <th class="text-center">ได้รับพิจารณา</th>
         </tr>
       </thead>
       <tbody id="summaryTableBody"></tbody>
       <tfoot>
         <tr style="font-weight:bold; background:#edf2f7;">
           <td colspan="2" class="text-center">รวมทั้งสิ้น</td>
-          <td class="text-right" id="totalPo">0.00</td>
-          <td class="text-right" id="totalNonEligible">0.00</td>
-          <td class="text-right" id="totalEligible">0.00</td>
+          <td class="text-center" id="totalPo">0.00</td>
+          <td class="text-center" id="totalNonEligible">0.00</td>
+          <td class="text-center" id="totalEligible">0.00</td>
           <td colspan="3"></td>
-          <td class="text-right" id="totalCompensation" style="color:var(--primary); font-size:15px;">0.00</td>
+          <td class="text-center" id="totalCompensation" style="color:var(--primary); font-size:15px;">0.00</td>
           <td class="no-print"></td>
         </tr>
       </tfoot>
@@ -723,13 +723,13 @@
           <tr>
             <td class="text-center">${p.id}</td>
             <td class="text-center">${thaiFormattedDate}</td>
-            <td class="text-right">${p.po.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-            <td class="text-right">${p.nonEligiblePo.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-            <td class="text-right">${eligiblePo.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+            <td class="text-center">${p.po.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+            <td class="text-center">${p.nonEligiblePo.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+            <td class="text-center">${eligiblePo.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
             <td class="text-center">${p.formulaKey}</td>
             <td class="text-center"><b>${format3(kValue)}</b></td>
             <td class="text-center">${format3(kDiff)}</td>
-            <td class="text-right"><b>${compensation.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</b></td>
+            <td class="text-center"><b>${compensation.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</b></td>
             <td class="text-center no-print">
               <button class="btn btn-primary btn-sm" onclick="printSinglePeriod(${p.id})">🖨️ รายงานงวดนี้</button>
             </td>
@@ -802,13 +802,13 @@
         <tr>
           <td class="text-center">${p.id}</td>
           <td class="text-center">${thaiFormattedDate}</td>
-          <td class="text-right">${p.po.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-          <td class="text-right">${p.nonEligiblePo.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-          <td class="text-right">${eligiblePo.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+          <td class="text-center">${p.po.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+          <td class="text-center">${p.nonEligiblePo.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+          <td class="text-center">${eligiblePo.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
           <td class="text-center">${p.formulaKey}</td>
           <td class="text-center"><b>${format3(kValue)}</b></td>
           <td class="text-center">${format3(kDiff)}</td>
-          <td class="text-right"><b>${compensation.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</b></td>
+          <td class="text-center"><b>${compensation.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</b></td>
           <td class="text-center no-print">
             <button class="btn btn-primary btn-sm" onclick="printSinglePeriod(${p.id})">🖨️ รายงานงวดนี้</button>
           </td>
