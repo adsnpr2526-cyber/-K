@@ -266,19 +266,19 @@
   <div class="section no-print">
     <div class="section-title">🏛️ 1. ข้อมูลสัญญาและหน่วยงาน</div>
     <div class="grid-2">
-      <div class="form-group"><label>กระทรวง</label><input type="text" id="ministry" value="กระทรวงเกษตรและสหกรณ์" oninput="saveData()"></div>
-      <div class="form-group"><label>กรม / หน่วยงาน</label><input type="text" id="department" value="กรมชลประทาน" oninput="saveData()"></div>
-      <div class="form-group"><label>ชื่อโครงการ</label><input type="text" id="projectName" value="โครงการแก้ไขปัญหาการขาดแคลนน้ำอุปโภคบริโภค" oninput="saveData()"></div>
-      <div class="form-group"><label>สัญญาเลขที่</label><input type="text" id="contractNo" value="3/2550" oninput="saveData()"></div>
-      <div class="form-group"><label>ผู้รับจ้าง</label><input type="text" id="contractor" value="กิจการร่วมค้า AAAAAA" oninput="saveData()"></div>
-      <div class="form-group"><label>ค่างานทั้งสัญญา (บาท)</label><input type="number" id="contractValue" value="100000000" oninput="saveData()"></div>
+      <div class="form-group"><label>กระทรวง</label><input type="text" id="ministry" value="กระทรวงมหาดไทย" oninput="saveData()"></div>
+      <div class="form-group"><label>กรม / หน่วยงาน</label><input type="text" id="department" value="กรมส่งเสริมการปกครองท้องถิ่น" oninput="saveData()"></div>
+      <div class="form-group"><label>ชื่อโครงการ</label><input type="text" id="projectName" value="ก่อสร้างถนนคอนกรีต สายคลองควาย 2" oninput="saveData()"></div>
+      <div class="form-group"><label>สัญญาเลขที่</label><input type="text" id="contractNo" value="51/2569" oninput="saveData()"></div>
+      <div class="form-group"><label>ผู้รับจ้าง</label><input type="text" id="contractor" value="ห้างหุ้นส่วนจำกัด ไตรทอง นครศรีฯ" oninput="saveData()"></div>
+      <div class="form-group"><label>ค่างานทั้งสัญญา (บาท)</label><input type="number" id="contractValue" value="9100000" oninput="saveData()"></div>
       
-      <div class="form-group"><label>วันที่เปิดซองประกวดราคา</label><input type="date" id="bidDate" value="2549-10-10" onchange="saveData()"></div>
-      <div class="form-group"><label>วันเริ่มสัญญา</label><input type="date" id="startDate" value="2559-05-25" onchange="saveData()"></div>
-      <div class="form-group"><label>วันสิ้นสุดสัญญา</label><input type="date" id="endDate" value="2561-06-25" onchange="saveData()"></div>
-      <div class="form-group"><label>วันที่ส่งงานงวดสุดท้าย</label><input type="date" id="finalDeliveryDate" value="2561-07-07" onchange="saveData()"></div>
-      <div class="form-group"><label>วันที่ครบ 90 วันหลังส่งมอบงาน</label><input type="date" id="date90Days" value="2561-10-05" onchange="saveData()"></div>
-      <div class="form-group"><label>วันที่ผู้รับจ้างขอเงินชดเชย</label><input type="date" id="claimDate" value="2561-09-15" onchange="saveData()"></div>
+      <div class="form-group"><label>วันที่เปิดซองประกวดราคา</label><input type="date" id="bidDate" value="2568-11-28" onchange="saveData()"></div>
+      <div class="form-group"><label>วันเริ่มสัญญา</label><input type="date" id="startDate" value="2568-12-25" onchange="saveData()"></div>
+      <div class="form-group"><label>วันสิ้นสุดสัญญา</label><input type="date" id="endDate" value="2569-05-09" onchange="saveData()"></div>
+      <div class="form-group"><label>วันที่ส่งงานงวดสุดท้าย</label><input type="date" id="finalDeliveryDate" value="2569-05-08" onchange="saveData()"></div>
+      <div class="form-group"><label>วันที่ครบ 90 วันหลังส่งมอบงาน</label><input type="date" id="date90Days" value="2569-07-06" onchange="saveData()"></div>
+      <div class="form-group"><label>วันที่ผู้รับจ้างขอเงินชดเชย</label><input type="date" id="claimDate" value="2569-08-08" onchange="saveData()"></div>
     </div>
   </div>
 
@@ -290,24 +290,24 @@
         <label>เงื่อนไขการปรับราคา</label>
         <select id="criteriaPercent" onchange="saveData()">
           <option value="4">เกณฑ์ทั่วไป ±4% (ปรับราคาเมื่อ K เปลี่ยนแปลงเกิน 4%)</option>
-          <option value="2">เกณฑ์พิเศษ ±2% (ปรับราคาเมื่อ K เปลี่ยนแปลงเกิน 2%)</option>
+          <option value="2" selected>เกณฑ์พิเศษ ±2% (ปรับราคาเมื่อ K เปลี่ยนแปลงเกิน 2%)</option>
         </select>
       </div>
     </div>
     <div class="grid-4">
-      <div class="form-group"><label>Io (ดัชนีผู้บริโภค)</label><input type="number" step="0.1" id="base_Io" value="100.0" oninput="saveData()"></div>
-      <div class="form-group"><label>Co (ซีเมนต์)</label><input type="number" step="0.1" id="base_Co" value="100.0" oninput="saveData()"></div>
-      <div class="form-group"><label>Mo (วัสดุก่อสร้าง)</label><input type="number" step="0.1" id="base_Mo" value="100.0" oninput="saveData()"></div>
-      <div class="form-group"><label>So (เหล็ก)</label><input type="number" step="0.1" id="base_So" value="100.0" oninput="saveData()"></div>
-      <div class="form-group"><label>Eo (เครื่องจักร)</label><input type="number" step="0.1" id="base_Eo" value="100.0" oninput="saveData()"></div>
-      <div class="form-group"><label>Fo (น้ำมันดีเซล)</label><input type="number" step="0.1" id="base_Fo" value="100.0" oninput="saveData()"></div>
-      <div class="form-group"><label>Ao (แอสฟัลต์)</label><input type="number" step="0.1" id="base_Ao" value="100.0" oninput="saveData()"></div>
-      <div class="form-group"><label>Go (ยางตระกูล G)</label><input type="number" step="0.1" id="base_Go" value="100.0" oninput="saveData()"></div>
-      <div class="form-group"><label>ACo (ท่อซีเมนต์ใยหิน)</label><input type="number" step="0.1" id="base_ACo" value="100.0" oninput="saveData()"></div>
-      <div class="form-group"><label>PVCo (ท่อ PVC)</label><input type="number" step="0.1" id="base_PVCo" value="100.0" oninput="saveData()"></div>
-      <div class="form-group"><label>PEo (ท่อ PE)</label><input type="number" step="0.1" id="base_PEo" value="100.0" oninput="saveData()"></div>
-      <div class="form-group"><label>GIPo (ท่อเหล็กอาบสังกะสี)</label><input type="number" step="0.1" id="base_GIPo" value="100.0" oninput="saveData()"></div>
-      <div class="form-group"><label>Wo (สายไฟฟ้า)</label><input type="number" step="0.1" id="base_Wo" value="100.0" oninput="saveData()"></div>
+      <div class="form-group"><label>Io (ดัชนีผู้บริโภค)</label><input type="number" step="0.1" id="base_Io" value="277.2" oninput="saveData()"></div>
+      <div class="form-group"><label>Co (ซีเมนต์)</label><input type="number" step="0.1" id="base_Co" value="212.0" oninput="saveData()"></div>
+      <div class="form-group"><label>Mo (วัสดุก่อสร้าง)</label><input type="number" step="0.1" id="base_Mo" value="320.3" oninput="saveData()"></div>
+      <div class="form-group"><label>So (เหล็ก)</label><input type="number" step="0.1" id="base_So" value="252.2" oninput="saveData()"></div>
+      <div class="form-group"><label>Eo (เครื่องจักร)</label><input type="number" step="0.1" id="base_Eo" value="416.2" oninput="saveData()"></div>
+      <div class="form-group"><label>Fo (น้ำมันดีเซล)</label><input type="number" step="0.1" id="base_Fo" value="529.1" oninput="saveData()"></div>
+      <div class="form-group"><label>Ao (แอสฟัลต์)</label><input type="number" step="0.1" id="base_Ao" value="563.8" oninput="saveData()"></div>
+      <div class="form-group"><label>Go (ยางตระกูล G)</label><input type="number" step="0.1" id="base_Go" value="355.9" oninput="saveData()"></div>
+      <div class="form-group"><label>ACo (ท่อซีเมนต์ใยหิน)</label><input type="number" step="0.1" id="base_ACo" value="208.6" oninput="saveData()"></div>
+      <div class="form-group"><label>PVCo (ท่อ PVC)</label><input type="number" step="0.1" id="base_PVCo" value="150.8" oninput="saveData()"></div>
+      <div class="form-group"><label>PEo (ท่อ PE)</label><input type="number" step="0.1" id="base_PEo" value="279.2" oninput="saveData()"></div>
+      <div class="form-group"><label>GIPo (ท่อเหล็กอาบสังกะสี)</label><input type="number" step="0.1" id="base_GIPo" value="393.1" oninput="saveData()"></div>
+      <div class="form-group"><label>Wo (สายไฟฟ้า)</label><input type="number" step="0.1" id="base_Wo" value="356.4" oninput="saveData()"></div>
     </div>
   </div>
 
@@ -486,8 +486,8 @@
   };
 
   const defaultPeriods = [
-    { id: 1, date: "2559-06-30", po: 1400000, nonEligiblePo: 250000, formulaKey: "K2_1", indices: { I: 105.0, E: 108.0, F: 112.5 } },
-    { id: 2, date: "2559-07-29", po: 5000000, nonEligiblePo: 20000, formulaKey: "K2_1", indices: { I: 106.0, E: 108.0, F: 112.5 } }
+    { id: 1, date: "2569-03-02", po: 1413688.08, nonEligiblePo: 1413688.08, formulaKey: "K2_1", indices: { I: 277.6, E: 426.1, F: 549.1 } },
+    { id: 2, date: "2569-05-08", po: 7686311.92, nonEligiblePo: 649544.40, formulaKey: "K3_4", indices: { I: 285.7, C: 215.7, M: 347.2, S: 269.5 } }
   ];
 
   let periods = [];
@@ -671,8 +671,8 @@
         const baseVal = parseFloat(document.getElementById('base_Co')?.value) || 100.0;
         const periodVal = p.indices['C'] !== undefined ? p.indices['C'] : baseVal;
         
-        // คำนวณอัตราส่วนและตัดทศนิยมตำแหน่งที่ 4 ทิ้งทันที (คงเหลือ 3 ตำแหน่งแบบไม่ปัดเศษ)
-        const ratio = truncate3(periodVal / baseVal);
+        const rawRatio = periodVal / baseVal;
+        const ratio = truncate3(rawRatio);
         const kValue = ratio;
         
         let kDiff = 0;
@@ -691,7 +691,7 @@
           kValue,
           kDiff,
           compensation,
-          termResults: [{ key: 'C', label: 'ดัชนีซีเมนต์ (C)', coeff: 1.0, baseVal, periodVal, ratio, product: ratio }],
+          termResults: [{ key: 'C', label: 'ดัชนีซีเมนต์ (C)', coeff: 1.0, baseVal, periodVal, rawRatio, ratio, product: ratio }],
           criteriaPercent,
           formulaName: formula.name,
           formulaConst: 0
@@ -701,9 +701,9 @@
           <tr>
             <td class="text-center">${p.id}</td>
             <td class="text-center">${thaiFormattedDate}</td>
-            <td class="text-right">${p.po.toLocaleString()}</td>
-            <td class="text-right">${p.nonEligiblePo.toLocaleString()}</td>
-            <td class="text-right">${eligiblePo.toLocaleString()}</td>
+            <td class="text-right">${p.po.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+            <td class="text-right">${p.nonEligiblePo.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+            <td class="text-right">${eligiblePo.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
             <td class="text-center">${p.formulaKey}</td>
             <td class="text-center"><b>${format3(kValue)}</b></td>
             <td class="text-center">${format3(kDiff)}</td>
@@ -725,10 +725,11 @@
         const baseVal = parseFloat(document.getElementById(baseInputKey)?.value) || 100.0;
         const periodVal = p.indices[term.key] !== undefined ? p.indices[term.key] : baseVal;
         
-        // 1. คำนวณอัตราส่วน แล้วตัดทศนิยมตำแหน่งที่ 4 ทิ้งทันที (คงเหลือ 3 ตำแหน่ง)
-        const ratio = truncate3(periodVal / baseVal);
+        // 1. คำนวณอัตราส่วนเต็มและตัดทศนิยมตำแหน่งที่ 4 ทิ้ง (คงเหลือ 3 ตำแหน่ง)
+        const rawRatio = periodVal / baseVal;
+        const ratio = truncate3(rawRatio);
         
-        // 2. นำอัตราส่วนที่ตัดเหลือ 3 ตำแหน่ง มาคูณสัมประสิทธิ์ แล้วตัดทศนิยมตำแหน่งที่ 4 ทิ้งอีกครั้ง
+        // 2. นำอัตราส่วนที่ตัดเหลือ 3 ตำแหน่ง มาคูณสัมประสิทธิ์ แล้วตัดทศนิยมตำแหน่งที่ 4 ทิ้งอีกครั้ง (ตามตัวอย่างในรูป 1.jpg/2.jpg)
         const product = truncate3(term.coeff * ratio);
         
         termResults.push({
@@ -737,11 +738,12 @@
           coeff: term.coeff,
           baseVal,
           periodVal,
+          rawRatio,
           ratio,
           product
         });
 
-        // 3. รวมค่าคงที่กับผลคูณแต่ละพจน์ (ตัดเหลือ 3 ตำแหน่ง)
+        // 3. รวมค่าคงที่กับผลคูณแต่ละพจน์
         calculatedK = truncate3(calculatedK + product);
       });
 
@@ -778,9 +780,9 @@
         <tr>
           <td class="text-center">${p.id}</td>
           <td class="text-center">${thaiFormattedDate}</td>
-          <td class="text-right">${p.po.toLocaleString()}</td>
-          <td class="text-right">${p.nonEligiblePo.toLocaleString()}</td>
-          <td class="text-right">${eligiblePo.toLocaleString()}</td>
+          <td class="text-right">${p.po.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+          <td class="text-right">${p.nonEligiblePo.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+          <td class="text-right">${eligiblePo.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
           <td class="text-center">${p.formulaKey}</td>
           <td class="text-center"><b>${format3(kValue)}</b></td>
           <td class="text-center">${format3(kDiff)}</td>
@@ -806,9 +808,9 @@
     document.getElementById('rDate90Days').innerText = formatDateToThai(document.getElementById('date90Days').value);
     document.getElementById('rClaimDate').innerText = formatDateToThai(document.getElementById('claimDate').value);
 
-    document.getElementById('totalPo').innerText = sumPo.toLocaleString();
-    document.getElementById('totalNonEligible').innerText = sumNonEligible.toLocaleString();
-    document.getElementById('totalEligible').innerText = sumEligible.toLocaleString();
+    document.getElementById('totalPo').innerText = sumPo.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    document.getElementById('totalNonEligible').innerText = sumNonEligible.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    document.getElementById('totalEligible').innerText = sumEligible.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
     document.getElementById('totalCompensation').innerText = sumComp.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
     document.getElementById('reportSection').style.display = 'block';
@@ -879,9 +881,9 @@
           <td>${t.label}</td>
           <td class="text-center">${t.baseVal.toFixed(1)}</td>
           <td class="text-center">${t.periodVal.toFixed(1)}</td>
-          <td class="text-center">${format3(t.ratio)}</td>
+          <td class="text-center">${t.rawRatio.toFixed(6)} &rarr; <b>${format3(t.ratio)}</b></td>
           <td class="text-center">${t.coeff.toFixed(2)}</td>
-          <td class="text-center">${format3(t.product)}</td>
+          <td class="text-center">${t.coeff.toFixed(2)} &times; ${format3(t.ratio)} = <b>${format3(t.product)}</b></td>
         </tr>
       `;
 
@@ -939,7 +941,7 @@
           <div style="font-weight: bold; text-decoration: underline; margin-bottom: 6px;">📐 สูตรและการแทนค่าคำนวณค่า K:</div>
           <div class="calc-step"><b>1. สูตรคำนวณมาตรฐาน:</b> ${formulaSymbolic}</div>
           <div class="calc-step"><b>2. แทนค่าตัวเลขอัตราส่วนดัชนี:</b> ${formulaSubstituted}</div>
-          <div class="calc-step"><b>3. ผลคูณแต่ละพจน์:</b> ${formulaProducts}</div>
+          <div class="calc-step"><b>3. ผลคูณแต่ละพจน์ (คูณจาก Ratio 3 ตำแหน่ง):</b> ${formulaProducts}</div>
           <div class="calc-step" style="font-size:15px; margin-top:8px;"><b>4. ค่า K ที่คำนวณได้ = <span style="color:#2b6cb0;">${format3(c.kValue)}</span></b></div>
         </div>
 
@@ -951,7 +953,7 @@
               <th class="text-center">ดัชนีเดือนที่ส่งมอบงาน (${periodDateFormatted})</th>
               <th class="text-center">อัตราส่วน (ตัดทศนิยมตำแหน่งที่ 4 ทิ้ง)</th>
               <th class="text-center">สัมประสิทธิ์</th>
-              <th class="text-center">ผลคูณ</th>
+              <th class="text-center">ผลคูณ (ตัดทศนิยมตำแหน่งที่ 4 ทิ้ง)</th>
             </tr>
           </thead>
           <tbody>
@@ -984,10 +986,10 @@
 
         <div class="calc-box">
           <div style="font-weight: bold; text-decoration: underline; margin-bottom: 6px;">💡 วิธีคำนวณเงินชดเชยค่างาน:</div>
-          <div class="calc-step"><b>1. พิจารณาเกณฑ์การปรับราคา (±${c.criteriaPercent}%):</b> ${kDiffCalcText}</div>
-          <div class="calc-step"><b>2. ค่างานที่นำมาคำนวณ (P_o):</b> ${p.po.toLocaleString()} - ${p.nonEligiblePo.toLocaleString()} = <b>${c.eligiblePo.toLocaleString()}</b> บาท</div>
-          <div class="calc-step"><b>3. สูตรคำนวณเงินชดเชย:</b> เงินชดเชย = P_o × ส่วนต่าง K</div>
-          <div class="calc-step" style="padding-left: 20px;">= ${c.eligiblePo.toLocaleString()} × ${format3(c.kDiff)}</div>
+          <div class="calc-step"><b>1. พิจารณาเกณฑ์การปรับราคา (&plusmn;${c.criteriaPercent}%):</b> ${kDiffCalcText}</div>
+          <div class="calc-step"><b>2. ค่างานที่นำมาคำนวณ (P_o):</b> ${p.po.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} - ${p.nonEligiblePo.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} = <b>${c.eligiblePo.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</b> บาท</div>
+          <div class="calc-step"><b>3. สูตรคำนวณเงินชดเชย:</b> เงินชดเชย = P_o &times; ส่วนต่าง K</div>
+          <div class="calc-step" style="padding-left: 20px;">= ${c.eligiblePo.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} &times; ${format3(c.kDiff)}</div>
           <div class="calc-step" style="font-size: 15px; margin-top: 6px;"><b>= <span style="color:#2b6cb0; text-decoration: underline;">${c.compensation.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span> บาท</b></div>
         </div>
 
