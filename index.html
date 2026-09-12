@@ -46,7 +46,6 @@
       border: 1px solid rgba(255, 255, 255, 0.8);
     }
 
-    /* Header Banner with Gradient & Developer Credit */
     .app-header {
       background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 50%, #06b6d4 100%);
       color: white;
@@ -70,7 +69,6 @@
       pointer-events: none;
     }
 
-    /* Developer Badge Positioned Top-Right with Red Accent */
     .developer-badge {
       position: absolute;
       top: 14px;
@@ -106,7 +104,6 @@
       font-weight: 300;
     }
 
-    /* Section Cards */
     .section { 
       background: #ffffff; 
       border: 1px solid var(--border); 
@@ -133,12 +130,10 @@
       padding-bottom: 10px;
     }
 
-    /* Grid Layouts */
     .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
     .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
     .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
 
-    /* Form Inputs */
     .form-group { display: flex; flex-direction: column; }
     .form-group label { 
       font-size: 13px; 
@@ -164,7 +159,6 @@
       box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
     }
 
-    /* Tables */
     table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 12px; overflow: hidden; border-radius: 8px; border: 1px solid var(--border); }
     th, td { padding: 10px 12px; text-align: left; font-size: 13.5px; border-bottom: 1px solid var(--border); }
     th { background: #f1f5f9; color: var(--dark); font-weight: 600; }
@@ -182,7 +176,6 @@
     .text-right { text-align: right; }
     .text-center { text-align: center; }
 
-    /* Buttons */
     .btn { 
       display: inline-flex;
       align-items: center;
@@ -214,7 +207,6 @@
 
     .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 6px; }
 
-    /* Modal Styling */
     .modal { 
       display: none; 
       position: fixed; 
@@ -247,7 +239,6 @@
       padding-bottom: 10px;
     }
 
-    /* Print Customization */
     @media print {
       .no-print { display: none !important; }
       body { background: white; padding: 0; }
@@ -263,7 +254,6 @@
 <body>
 
 <div class="container">
-  <!-- Header Banner with Developer Credit -->
   <div class="app-header">
     <div class="developer-badge">
       🛠️ พัฒนาโดย อดิศัย นพรัตน์ (ช่างไผ่)
@@ -426,6 +416,17 @@
 </div>
 
 <script>
+  // ฟังก์ชันตัดทศนิยมตำแหน่งที่ 4 เป็นต้นไปทิ้ง (คงเหลือ 3 ตำแหน่ง โดยไม่ปัดเศษ)
+  function truncate3(val) {
+    if (isNaN(val)) return 0;
+    return Math.trunc(val * 1000) / 1000;
+  }
+
+  // ฟังก์ชันแปลงตัวเลขเป็นข้อความทศนิยม 3 ตำแหน่งแบบไม่ปัดเศษ
+  function format3(val) {
+    return truncate3(val).toFixed(3);
+  }
+
   function formatDateToThai(dateString) {
     if (!dateString) return "";
     const parts = dateString.split('-');
@@ -653,8 +654,8 @@
     saveData();
 
     const criteriaPercent = parseFloat(document.getElementById('criteriaPercent').value);
-    const upperLimit = 1 + (criteriaPercent / 100);
-    const lowerLimit = 1 - (criteriaPercent / 100);
+    const upperLimit = truncate3(1 + (criteriaPercent / 100));
+    const lowerLimit = truncate3(1 - (criteriaPercent / 100));
 
     const summaryTbody = document.getElementById('summaryTableBody');
     summaryTbody.innerHTML = '';
@@ -669,12 +670,12 @@
       if (p.formulaKey === 'K4_7') {
         const baseVal = parseFloat(document.getElementById('base_Co')?.value) || 100.0;
         const periodVal = p.indices['C'] !== undefined ? p.indices['C'] : baseVal;
-        const ratio = Number((periodVal / baseVal).toFixed(3));
+        const ratio = truncate3(periodVal / baseVal);
         const kValue = ratio;
         
         let kDiff = 0;
-        if (kValue > upperLimit) kDiff = Number((kValue - upperLimit).toFixed(3));
-        else if (kValue < lowerLimit) kDiff = Number((lowerLimit - kValue).toFixed(3));
+        if (kValue > upperLimit) kDiff = truncate3(kValue - upperLimit);
+        else if (kValue < lowerLimit) kDiff = truncate3(lowerLimit - kValue);
         
         const compensation = eligiblePo * kDiff;
 
@@ -702,8 +703,8 @@
             <td class="text-right">${p.nonEligiblePo.toLocaleString()}</td>
             <td class="text-right">${eligiblePo.toLocaleString()}</td>
             <td class="text-center">${p.formulaKey}</td>
-            <td class="text-center"><b>${kValue.toFixed(3)}</b></td>
-            <td class="text-center">${kDiff.toFixed(3)}</td>
+            <td class="text-center"><b>${format3(kValue)}</b></td>
+            <td class="text-center">${format3(kDiff)}</td>
             <td class="text-right"><b>${compensation.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</b></td>
             <td class="text-center no-print">
               <button class="btn btn-primary btn-sm" onclick="printSinglePeriod(${p.id})">🖨️ รายงานงวดนี้</button>
@@ -722,8 +723,9 @@
         const baseVal = parseFloat(document.getElementById(baseInputKey)?.value) || 100.0;
         const periodVal = p.indices[term.key] !== undefined ? p.indices[term.key] : baseVal;
         
-        const ratio = Number((periodVal / baseVal).toFixed(3));
-        const product = Number((term.coeff * ratio).toFixed(3));
+        // ตัดทศนิยมตำแหน่งที่ 4 ทิ้งทันทีสำหรับทุกขั้นตอน
+        const ratio = truncate3(periodVal / baseVal);
+        const product = truncate3(term.coeff * ratio);
         
         termResults.push({
           key: term.key,
@@ -735,16 +737,16 @@
           product
         });
 
-        calculatedK += term.coeff * ratio;
+        calculatedK = truncate3(calculatedK + product);
       });
 
-      const kValue = Number(calculatedK.toFixed(3));
+      const kValue = truncate3(calculatedK);
 
       let kDiff = 0;
       if (kValue > upperLimit) {
-        kDiff = Number((kValue - upperLimit).toFixed(3));
+        kDiff = truncate3(kValue - upperLimit);
       } else if (kValue < lowerLimit) {
-        kDiff = Number((lowerLimit - kValue).toFixed(3));
+        kDiff = truncate3(lowerLimit - kValue);
       } else {
         kDiff = 0;
       }
@@ -775,8 +777,8 @@
           <td class="text-right">${p.nonEligiblePo.toLocaleString()}</td>
           <td class="text-right">${eligiblePo.toLocaleString()}</td>
           <td class="text-center">${p.formulaKey}</td>
-          <td class="text-center"><b>${kValue.toFixed(3)}</b></td>
-          <td class="text-center">${kDiff.toFixed(3)}</td>
+          <td class="text-center"><b>${format3(kValue)}</b></td>
+          <td class="text-center">${format3(kDiff)}</td>
           <td class="text-right"><b>${compensation.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</b></td>
           <td class="text-center no-print">
             <button class="btn btn-primary btn-sm" onclick="printSinglePeriod(${p.id})">🖨️ รายงานงวดนี้</button>
@@ -815,8 +817,8 @@
     }
 
     const c = p.calcData;
-    const upperLimit = 1 + (c.criteriaPercent / 100);
-    const lowerLimit = 1 - (c.criteriaPercent / 100);
+    const upperLimit = truncate3(1 + (c.criteriaPercent / 100));
+    const lowerLimit = truncate3(1 - (c.criteriaPercent / 100));
     const periodDateFormatted = formatDateToThai(p.date);
     const bidDateFormatted = formatDateToThai(document.getElementById('bidDate').value);
 
@@ -848,18 +850,18 @@
 
     let formulaProducts = "K = " + (c.formulaConst > 0 ? c.formulaConst.toFixed(2) : "");
     c.termResults.forEach(t => {
-      formulaProducts += ` + ${t.product.toFixed(3)}`;
+      formulaProducts += ` + ${format3(t.product)}`;
     });
 
     let kDiffCalcText = "";
     if (c.kValue > upperLimit) {
-      kDiffCalcText = `เนื่องจาก ค่า K (${c.kValue.toFixed(3)}) > ${upperLimit.toFixed(2)} (เกินเกณฑ์เพิ่มขึ้นเกิน +${c.criteriaPercent}%)<br>` +
-                      `ส่วนต่าง K = K - ${upperLimit.toFixed(2)} = ${c.kValue.toFixed(3)} - ${upperLimit.toFixed(2)} = <b>${c.kDiff.toFixed(3)}</b> (ชดเชยเพิ่มให้ผู้รับจ้าง)`;
+      kDiffCalcText = `เนื่องจาก ค่า K (${format3(c.kValue)}) > ${format3(upperLimit)} (เกินเกณฑ์เพิ่มขึ้นเกิน +${c.criteriaPercent}%)<br>` +
+                      `ส่วนต่าง K = K - ${format3(upperLimit)} = ${format3(c.kValue)} - ${format3(upperLimit)} = <b>${format3(c.kDiff)}</b> (ชดเชยเพิ่มให้ผู้รับจ้าง)`;
     } else if (c.kValue < lowerLimit) {
-      kDiffCalcText = `เนื่องจาก ค่า K (${c.kValue.toFixed(3)}) < ${lowerLimit.toFixed(2)} (ลดลงเกิน -${c.criteriaPercent}%)<br>` +
-                      `ส่วนต่าง K = ${lowerLimit.toFixed(2)} - K = ${lowerLimit.toFixed(2)} - ${c.kValue.toFixed(3)} = <b>${c.kDiff.toFixed(3)}</b> (เรียกเงินคืนจากผู้รับจ้าง)`;
+      kDiffCalcText = `เนื่องจาก ค่า K (${format3(c.kValue)}) < ${format3(lowerLimit)} (ลดลงเกิน -${c.criteriaPercent}%)<br>` +
+                      `ส่วนต่าง K = ${format3(lowerLimit)} - K = ${format3(lowerLimit)} - ${format3(c.kValue)} = <b>${format3(c.kDiff)}</b> (เรียกเงินคืนจากผู้รับจ้าง)`;
     } else {
-      kDiffCalcText = `เนื่องจาก ค่า K (${c.kValue.toFixed(3)}) อยู่ในช่วง ${lowerLimit.toFixed(2)} ถึง ${upperLimit.toFixed(2)} (ไม่เกินเกณฑ์ ±${c.criteriaPercent}%)<br>` +
+      kDiffCalcText = `เนื่องจาก ค่า K (${format3(c.kValue)}) อยู่ในช่วง ${format3(lowerLimit)} ถึง ${format3(upperLimit)} (ไม่เกินเกณฑ์ ±${c.criteriaPercent}%)<br>` +
                       `ส่วนต่าง K = <b>0.000</b> (ไม่อยู่ในเงื่อนไขการปรับเพิ่มหรือลดเงิน)`;
     }
 
@@ -872,9 +874,9 @@
           <td>${t.label}</td>
           <td class="text-center">${t.baseVal.toFixed(1)}</td>
           <td class="text-center">${t.periodVal.toFixed(1)}</td>
-          <td class="text-center">${t.ratio.toFixed(3)}</td>
+          <td class="text-center">${format3(t.ratio)}</td>
           <td class="text-center">${t.coeff.toFixed(2)}</td>
-          <td class="text-center">${t.product.toFixed(3)}</td>
+          <td class="text-center">${format3(t.product)}</td>
         </tr>
       `;
 
@@ -933,7 +935,7 @@
           <div class="calc-step"><b>1. สูตรคำนวณมาตรฐาน:</b> ${formulaSymbolic}</div>
           <div class="calc-step"><b>2. แทนค่าตัวเลขอัตราส่วนดัชนี:</b> ${formulaSubstituted}</div>
           <div class="calc-step"><b>3. ผลคูณแต่ละพจน์:</b> ${formulaProducts}</div>
-          <div class="calc-step" style="font-size:15px; margin-top:8px;"><b>4. ค่า K ที่คำนวณได้ = <span style="color:#2b6cb0;">${c.kValue.toFixed(3)}</span></b></div>
+          <div class="calc-step" style="font-size:15px; margin-top:8px;"><b>4. ค่า K ที่คำนวณได้ = <span style="color:#2b6cb0;">${format3(c.kValue)}</span></b></div>
         </div>
 
         <table>
@@ -942,7 +944,7 @@
               <th>รายการดัชนีราคา</th>
               <th class="text-center">ดัชนีวันเปิดซองราคา (${bidDateFormatted})</th>
               <th class="text-center">ดัชนีเดือนที่ส่งมอบงาน (${periodDateFormatted})</th>
-              <th class="text-center">อัตราส่วน (ปัดเศษ 3 ตำแหน่ง)</th>
+              <th class="text-center">อัตราส่วน (ตัดทศนิยมตำแหน่งที่ 4 ทิ้ง)</th>
               <th class="text-center">สัมประสิทธิ์</th>
               <th class="text-center">ผลคูณ</th>
             </tr>
@@ -952,11 +954,11 @@
             ${c.formulaConst > 0 ? `
             <tr>
               <td colspan="5" class="text-right"><b>ค่าคงที่ (Constant)</b></td>
-              <td class="text-center"><b>${c.formulaConst.toFixed(3)}</b></td>
+              <td class="text-center"><b>${format3(c.formulaConst)}</b></td>
             </tr>` : ''}
             <tr class="highlight">
-              <td colspan="5" class="text-right"><b>ผลรวมค่า K (ปัดเศษ 3 ตำแหน่ง)</b></td>
-              <td class="text-center"><b>${c.kValue.toFixed(3)}</b></td>
+              <td colspan="5" class="text-right"><b>ผลรวมค่า K (ตัดทศนิยมตำแหน่งที่ 4 ทิ้ง)</b></td>
+              <td class="text-center"><b>${format3(c.kValue)}</b></td>
             </tr>
           </tbody>
         </table>
@@ -980,7 +982,7 @@
           <div class="calc-step"><b>1. พิจารณาเกณฑ์การปรับราคา (±${c.criteriaPercent}%):</b> ${kDiffCalcText}</div>
           <div class="calc-step"><b>2. ค่างานที่นำมาคำนวณ (P_o):</b> ${p.po.toLocaleString()} - ${p.nonEligiblePo.toLocaleString()} = <b>${c.eligiblePo.toLocaleString()}</b> บาท</div>
           <div class="calc-step"><b>3. สูตรคำนวณเงินชดเชย:</b> เงินชดเชย = P_o × ส่วนต่าง K</div>
-          <div class="calc-step" style="padding-left: 20px;">= ${c.eligiblePo.toLocaleString()} × ${c.kDiff.toFixed(3)}</div>
+          <div class="calc-step" style="padding-left: 20px;">= ${c.eligiblePo.toLocaleString()} × ${format3(c.kDiff)}</div>
           <div class="calc-step" style="font-size: 15px; margin-top: 6px;"><b>= <span style="color:#2b6cb0; text-decoration: underline;">${c.compensation.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span> บาท</b></div>
         </div>
 
