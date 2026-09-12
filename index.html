@@ -341,11 +341,14 @@
 
   <!-- 4. แสดงผลลัพธ์ ตารางสรุปแบบฟอร์มที่ 2 -->
   <div class="section" id="reportSection" style="display:none;">
-    <div class="section-title" style="justify-content: space-between;">
-      <span>📄 แบบฟอร์มที่ 2 การคำนวนเงินชดเชยเพิ่มเติมค่างานก่อสร้างตามสัญญาแบบปรับราคาได้ (ค่า K)</span>
-      <button class="btn btn-primary btn-sm no-print" onclick="window.print()">🖨️ พิมพ์รายงานสรุป</button>
+    <div class="section-title" style="justify-content: center; text-align: center; border-bottom: none; margin-bottom: 20px;">
+      <span style="width: 100%; font-size: 18px; font-weight: 700;">แบบฟอร์มที่ 2 การคำนวนเงินชดเชยเพิ่มเติมค่างานก่อสร้างตามสัญญาแบบปรับราคาได้ (ค่า K)</span>
     </div>
     
+    <div style="display: flex; justify-content: flex-end; margin-bottom: 15px;" class="no-print">
+      <button class="btn btn-primary btn-sm" onclick="window.print()">🖨️ พิมพ์รายงานสรุป</button>
+    </div>
+
     <table style="margin-bottom: 15px;">
       <tr>
         <td width="15%"><b>กระทรวง:</b></td><td width="18%" id="rMinistry"></td>
