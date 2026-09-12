@@ -671,7 +671,7 @@
         const baseVal = parseFloat(document.getElementById('base_Co')?.value) || 100.0;
         const periodVal = p.indices['C'] !== undefined ? p.indices['C'] : baseVal;
         
-        // ตัดทศนิยมตำแหน่งที่ 4 ทิ้งทันที (ไม่ปัดเศษ)
+        // คำนวณอัตราส่วนเต็มและตัดทศนิยมตำแหน่งที่ 4 ทิ้งทันที (คงเหลือ 3 ตำแหน่งแบบไม่ปัดเศษ)
         const ratio = truncate3(periodVal / baseVal);
         const kValue = ratio;
         
@@ -725,10 +725,10 @@
         const baseVal = parseFloat(document.getElementById(baseInputKey)?.value) || 100.0;
         const periodVal = p.indices[term.key] !== undefined ? p.indices[term.key] : baseVal;
         
-        // 1. คำนวณอัตราส่วน และตัดทศนิยมตำแหน่งที่ 4 ทิ้งทันที (ไม่ปัดเศษ)
+        // 1. คำนวณอัตราส่วนตามปกติ (ได้ทศนิยม 6 ตำแหน่ง) แล้วตัดทศนิยมตำแหน่งที่ 4 ทิ้งทันที (คงเหลือ 3 ตำแหน่ง)
         const ratio = truncate3(periodVal / baseVal);
         
-        // 2. คำนวณผลคูณสัมประสิทธิ์ และตัดทศนิยมตำแหน่งที่ 4 ทิ้ง
+        // 2. คำนวณผลคูณสัมประสิทธิ์ โดยนำค่าสัมประสิทธิ์ x อัตราส่วนที่ตัดเหลือ 3 ตำแหน่ง แล้วตัดทศนิยมตำแหน่งที่ 4 ทิ้งอีกครั้ง
         const product = truncate3(term.coeff * ratio);
         
         termResults.push({
@@ -741,6 +741,7 @@
           product
         });
 
+        // 3. รวมค่าคงที่กับผลคูณแต่ละพจน์
         calculatedK = truncate3(calculatedK + product);
       });
 
